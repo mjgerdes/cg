@@ -1,0 +1,11 @@
+
+
+
+package msg;
+import "Login.proto";
+
+message ClientMessage {
+  enum ClientMessageType { LoginType = 2; };
+  required ClientMessageType msgType = 1;
+  optional Login login = 2;
+  }

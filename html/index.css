@@ -1,0 +1,21 @@
+
+body {
+    color: #EEEEEE;
+    background-color: #000000;
+    }
+    
+#loginFormSection {
+    display: none;
+    }
+
+#loginFormSection * {
+    display: inherit;
+    }
+
+#portal {
+    display: none;
+    }
+
+#portal * {
+display: inherit;
+    }
