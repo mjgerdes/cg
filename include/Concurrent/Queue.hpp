@@ -1,4 +1,5 @@
-
+#ifndef __CONCURRENT_QUEUE_HPP__
+#define __CONCURRENT_QUEUE_HPP__
 
 #include <queue>
 #include <thread>
@@ -15,9 +16,11 @@ public:
 		while (queue_.empty()) {
 			cond_.wait(mlock);
 		}
-		auto item = queue_.front();
+		auto item = std::move(queue_.front()); // added && for move semantics
+//		auto item = queue_.front();;
 		queue_.pop();
-		return item;
+		return std::move(item); // also changed to have move()
+//		return item;
 	}
 
 	void pop(T& item) {
@@ -58,3 +61,6 @@ private:
 };  // end class ConcurrentQueue
 
 }  // end namespace Concurrent
+
+
+#endif
