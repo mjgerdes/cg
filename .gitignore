@@ -1,0 +1,14 @@
+
+
+# google protocol buffer compiled files
+*~
+.#*
+.#*#
+/.clang-format~
+/CMakeCache.txt
+/CMakeFiles
+/Makefile
+/cmake_install.cmake
+/log.txt
+/src/msg/*.pb.*
+\#*#
