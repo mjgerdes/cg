@@ -38,7 +38,9 @@ document.getElementById("portal").style.display = "block";
 
   ws.onopen=function(evt){
 //    ws.send("Hello");
+      for(i = 0; i < 1000; i++) {
       ws.send(clientMsg.toArrayBuffer());
+	  }
   };
 };
 
