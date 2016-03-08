@@ -28,7 +28,7 @@ std::string connectionString(const WSConnection& con) {
 }
 
 struct GameServer::GameServerImpl {
-	public:
+public:
 	using Impl = GameServer::GameServerImpl;
 
 	WSServer& server;
@@ -45,13 +45,21 @@ struct GameServer::GameServerImpl {
 	std::map<WSConnection, std::shared_ptr<PlayerAccount>> m_authedConnections;
 
 	using clientMessageFactory_type = msg::MessageFactory<msg::ClientMessage>;
-clientMessageFactory_type m_clientMessageFactory;
-	
-//	using ClientMessage_ptr = std::shared_ptr<msg::ClientMessage>;
+	clientMessageFactory_type m_clientMessageFactory;
+
+	//	using ClientMessage_ptr = std::shared_ptr<msg::ClientMessage>;
 	using ClientMessage_ptr = clientMessageFactory_type::RecycleMessage;
 	struct MessageQueueElement {
-		MessageQueueElement(const WSConnection& con, const ClientMessage_ptr& m)
-			: source(con), msg(m) {}
+		MessageQueueElement(const WSConnection& con, const ClientMessage_ptr&& m)
+			: source(con), msg(std::move(m)) {}
+		MessageQueueElement(MessageQueueElement&& other)
+			: source(other.source), msg(std::move(other.msg)) {}
+		MessageQueueElement(const MessageQueueElement&& other)
+			: source(other.source), msg(std::move(other.msg)) {}
+//		MessageQueueElement(const MessageQueueElement&) = delete;
+//		const MessageQueueElement& operator=(const MessageQueueElement&) = delete;
+//		void operator=(MessageQueueElement&&) = delete;
+//		void operator=(const MessageQueueElement&&) = delete;
 		WSConnection source;
 		const ClientMessage_ptr msg;
 	};  // end MessageQueueElement
@@ -59,12 +67,11 @@ clientMessageFactory_type m_clientMessageFactory;
 
 	msg::MessageDispatcher<msg::ClientMessage,
 						   msg::ClientMessage::ClientMessageType,
-						   msg::pbmsg_type,
-						   WSConnection> m_dispatcher;
+						   msg::pbmsg_type, WSConnection> m_dispatcher;
 
-	public:
+public:
 	GameServerImpl(WSServer& serv, LogServer& logServ)
-		: server(serv), logServer(logServ), m_clientMessageFactory(16) {
+		: server(serv), logServer(logServ), m_clientMessageFactory(1) {
 		init();
 	}
 
@@ -111,12 +118,14 @@ clientMessageFactory_type m_clientMessageFactory;
 				 msg);
 
 		auto cmsg = m_clientMessageFactory.makeRecycleMessage();
-		if (!cmsg->ParseFromString(msg)) {
-			std::cerr << "Could not parse LOL\n";
-			return;
-		}
-
-		m_messageQueue.emplace(connection, cmsg);
+		{
+			std::lock_guard<std::mutex> cmsgLock(cmsg.getMutex());
+			if (!cmsg->ParseFromString(msg)) {
+				std::cerr << "Could not parse LOL\n";
+				return;
+			}
+		} // guard
+		m_messageQueue.emplace(connection, std::move(cmsg));
 	}
 
 	void onLogin(const msg::Login* msg, const WSConnection source) {
@@ -149,7 +158,10 @@ clientMessageFactory_type m_clientMessageFactory;
 		while (true) {
 			// this will block
 			auto e = m_messageQueue.pop();
+			{
+				std::lock_guard<std::mutex> msgLock(e.msg.getMutex());
 			m_dispatcher.handle(e.msg->msgtype(), &(*(e.msg)), e.source);
+			} // guard
 		}  // while
 	}
 };  // end struct GameServerImpl
