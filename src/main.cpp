@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 	unsigned short port = 8080;
 	auto threads = 4u;
 	WSServer server{port, threads};
-	auto logServer = LogServer{};
+	auto logServer = LogServer{true};
 	logServer.log<Log::net>("Logging started");
 
 	auto gameServer = std::make_unique<GameServer>(server, logServer);

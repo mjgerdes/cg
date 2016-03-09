@@ -11,6 +11,7 @@ struct LogServer::LogServerImpl {
 	LogServerImpl() : m_messageQueue(1024) {}
 
 public:
+	
 	typedef LogMessage queue_element_type;
 	typedef boost::lockfree::queue<queue_element_type*> queue_type;
 	queue_type m_messageQueue;
@@ -35,7 +36,7 @@ public:
 
 // Definitions of LogServer public interface
 // constructors
-LogServer::LogServer() : m_pimpl(std::make_unique<LogServerImpl>()) {}
+LogServer::LogServer(bool debug) : m_pimpl(std::make_unique<LogServerImpl>()), m_debug(debug) {}
 LogServer::~LogServer() {}
 LogServer::LogServer(LogServer&& other) : m_pimpl{std::move(other.m_pimpl)} {}
 

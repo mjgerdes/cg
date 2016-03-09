@@ -80,7 +80,6 @@ public:
 
 	template <typename msg_T, typename... args_T>
 	void log(args_T&&... args) {
-		std::cout << "logging...\n";
 		logServer.log<msg_T>(std::forward<args_T>(args)...);
 	}
 
@@ -118,7 +117,7 @@ public:
 
 	void onMessageEvent(WSConnection connection, WSMessage serverMessage) {
 		const auto msg(serverMessage->string());
-		log<net>("Recieved message from ", connectionString(connection), "\n",
+		log<dbg>("Recieved message from ", connectionString(connection), "\n",
 				 msg);
 
 		auto cmsg = m_clientMessageFactory.makeRecycleMessage();
@@ -133,11 +132,11 @@ public:
 	}
 
 	void onLogin(const msg::Login* msg, const WSConnection source) {
-		log<net>("Hello to ", msg->email());
+		log<dbg>("Hello to ", msg->email());
 	}
 
 	void init() {
-		std::cout << "Initializing GameServer.\n";
+		log<dbg>("Initializing GameServer\n");
 
 		using namespace msg;
 		auto reg = m_dispatcher.getRegisterFunction(this);
