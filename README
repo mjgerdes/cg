@@ -1,0 +1,12 @@
+
+CG Game Server is an extensible WebSock based game server/client framework.
+
+CG provides
+
+ - a websock server (based on SimpleWebsocketServer)
+ - a type safe, fast, extensible and easy to use client/server messaging system (based on Google's protocol buffers)
+ - a batteries-included, lightweight and easy-to-extent database layer (based on ODB)
+ - fast, simple and powerful scripting (based on Lua)
+ - purely browser based client code (based on HTML and Javascript)
+
+CG is still in a very early stage of development! Check back again in the future :-)
