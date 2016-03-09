@@ -10,5 +10,7 @@
 /Makefile
 /cmake_install.cmake
 /log.txt
+/mrun.sh
+/run.sh
 /src/msg/*.pb.*
 \#*#
