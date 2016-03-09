@@ -8,7 +8,7 @@
 #include "LogServer.hpp"
 
 struct LogServer::LogServerImpl {
-	LogServerImpl() : m_messageQueue(128) {}
+	LogServerImpl() : m_messageQueue(1024) {}
 
 public:
 	typedef LogMessage queue_element_type;
@@ -26,7 +26,7 @@ public:
 		while (true) {
 			if (m_messageQueue.pop(msg)) {
 				msg->write();
-							delete msg;
+				delete msg;
 			}
 		}  // while
 	}
@@ -34,7 +34,7 @@ public:
 };  // end struct LogServerImpl
 
 // Definitions of LogServer public interface
-
+// constructors
 LogServer::LogServer() : m_pimpl(std::make_unique<LogServerImpl>()) {}
 LogServer::~LogServer() {}
 LogServer::LogServer(LogServer&& other) : m_pimpl{std::move(other.m_pimpl)} {}

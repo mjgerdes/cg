@@ -58,17 +58,19 @@ private:
 	template <typename parentInstance_T>
 	struct RegisterHelper {
 		this_type* m_dispatcher;
-		parentInstance_T* parent;
+		parentInstance_T* m_parent;
 		RegisterHelper(this_type* dispatcher, parentInstance_T* p)
-			: m_dispatcher(dispatcher), parent(p) {}
+			: m_dispatcher(dispatcher), m_parent(p) {}
 		template <typename innerMsg_T>
 		void entry(
 			const msgEnum_type e,
 			std::function<const innerMsg_T&(const outerMsg_type*)> extractor,
 			std::function<void(parentInstance_T*, const innerMsg_T*, args_T...)>
 				handler) {
+			auto parent = m_parent;
 			return m_dispatcher->registerHandler<innerMsg_T>(
-				e, extractor, [=](const innerMsg_T* msg, auto... handlerArgs) {
+				e, extractor,
+				[parent, handler](const innerMsg_T* msg, auto... handlerArgs) {
 					return handler(parent, msg, handlerArgs...);
 				});
 		}  // end function entry

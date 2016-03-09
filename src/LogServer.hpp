@@ -9,8 +9,7 @@ public:
 	struct LogMessage {
 		LogMessage(const std::string& msg) : m_msg(msg) {}
 		virtual ~LogMessage() = default;
-		inline virtual void
-		write() = 0;  //{ std::cout << m_msg << std::endl; }
+		inline virtual void write() = 0;  //{ std::cout << m_msg << std::endl; }
 	protected:
 		const std::string m_msg;
 	};

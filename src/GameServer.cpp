@@ -50,16 +50,19 @@ public:
 	//	using ClientMessage_ptr = std::shared_ptr<msg::ClientMessage>;
 	using ClientMessage_ptr = clientMessageFactory_type::RecycleMessage;
 	struct MessageQueueElement {
-		MessageQueueElement(const WSConnection& con, const ClientMessage_ptr&& m)
+		MessageQueueElement(const WSConnection& con,
+							const ClientMessage_ptr&& m)
 			: source(con), msg(std::move(m)) {}
 		MessageQueueElement(MessageQueueElement&& other)
 			: source(other.source), msg(std::move(other.msg)) {}
 		MessageQueueElement(const MessageQueueElement&& other)
 			: source(other.source), msg(std::move(other.msg)) {}
-//		MessageQueueElement(const MessageQueueElement&) = delete;
-//		const MessageQueueElement& operator=(const MessageQueueElement&) = delete;
-//		void operator=(MessageQueueElement&&) = delete;
-//		void operator=(const MessageQueueElement&&) = delete;
+		//		MessageQueueElement(const MessageQueueElement&) = delete;
+		//		const MessageQueueElement& operator=(const MessageQueueElement&)
+		//=
+		// delete;
+		//		void operator=(MessageQueueElement&&) = delete;
+		//		void operator=(const MessageQueueElement&&) = delete;
 		WSConnection source;
 		const ClientMessage_ptr msg;
 	};  // end MessageQueueElement
@@ -77,6 +80,7 @@ public:
 
 	template <typename msg_T, typename... args_T>
 	void log(args_T&&... args) {
+		std::cout << "logging...\n";
 		logServer.log<msg_T>(std::forward<args_T>(args)...);
 	}
 
@@ -124,12 +128,12 @@ public:
 				std::cerr << "Could not parse LOL\n";
 				return;
 			}
-		} // guard
+		}  // guard
 		m_messageQueue.emplace(connection, std::move(cmsg));
 	}
 
 	void onLogin(const msg::Login* msg, const WSConnection source) {
-		std::cout << msg->email() << std::endl;
+		log<net>("Hello to ", msg->email());
 	}
 
 	void init() {
@@ -160,9 +164,9 @@ public:
 			auto e = m_messageQueue.pop();
 			{
 				std::lock_guard<std::mutex> msgLock(e.msg.getMutex());
-			m_dispatcher.handle(e.msg->msgtype(), &(*(e.msg)), e.source);
-			} // guard
-		}  // while
+				m_dispatcher.handle(e.msg->msgtype(), &(*(e.msg)), e.source);
+			}  // guard
+		}	  // while
 	}
 };  // end struct GameServerImpl
 
