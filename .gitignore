@@ -8,6 +8,8 @@
 /CMakeCache.txt
 /CMakeFiles
 /Makefile
+/boost-1.60-tsan
+/build
 /cmake_install.cmake
 /log.txt
 /mrun.sh

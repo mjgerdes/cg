@@ -10,3 +10,21 @@ CG provides
  - purely browser based client code (based on HTML and Javascript)
 
 CG is still in a very early stage of development! Check back again in the future :-)
+
+Installation
+=========
+Building CG requires several prerequisites. You should
+ - make sure you have boost libraries version 1.54 or higher installed and in your library and include path
+ - have protoc, the google protocol buffer compiler installed and
+ - have the libprotobuf libraries installed
+ - have libssl installed.
+ - have other fun dependencies installed! The CMake system and the compiler will guide you :)
+
+To build, make sure you are in the top level directory of cg. Then do
+
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=release ../
+$ make
+
+You will end up with a 'cgserver' executable.
