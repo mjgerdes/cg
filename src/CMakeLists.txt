@@ -36,8 +36,14 @@ include_directories(${OPENSSL_INCLUDE_DIR})
 
 find_package(Threads REQUIRED)
 
+find_package(Protobuf REQUIRED)
+ include_directories(${PROTOBUF_INCLUDE_DIRS})
+ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+file(GLOB PROTOFILES
+  "proto/*.proto")
 
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS "${PROTOFILES}")
 
 include_directories(.)
 include_directories(include)
@@ -48,13 +54,18 @@ file(GLOB CG_SRC_FILES
   "*.hpp"
   "include/*.hpp")
 
-add_executable(cgserver ${CG_SRC_FILES})
+
+
+
+
+add_executable(cgserver ${CG_SRC_FILES} ${PROTO_SRCS} ${PROTO_HDRS})
 
 if("${FSAN}" STREQUAL "thread")
   target_link_libraries(cgserver ${BOOST160_TSAN_ROOT}/lib/libboost_regex.a)
 endif()
 
-target_link_libraries(cgserver libprotobuf.so)
+#target_link_libraries(cgserver libprotobuf.so)
+target_link_libraries(cgserver ${PROTOBUF_LIBRARIES})
 target_link_libraries(cgserver ${Boost_LIBRARIES})
 target_link_libraries(cgserver ${OPENSSL_CRYPTO_LIBRARY})
 target_link_libraries(cgserver ${CMAKE_THREAD_LIBS_INIT})

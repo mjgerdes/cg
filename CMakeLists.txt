@@ -18,9 +18,6 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 message("Selecting sanitizer: ${FSAN}")
 
-
-
-
 set(CMAKE_CXX_COMPILER clang++)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -fsanitize=address ")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O3")
@@ -35,5 +32,6 @@ configure_file(
    "${PROJECT_BINARY_DIR}/gcc_filter.sh"
     @ONLY)
 set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${PROJECT_BINARY_DIR}/gcc_filter.sh")
+
 
 add_subdirectory(src)

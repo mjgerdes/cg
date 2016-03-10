@@ -7,7 +7,7 @@
 #include <memory>
 #include "websock/server_ws.hpp"
 #include "websock/client_ws.hpp"
-#include "msg/ClientMessage.pb.h"
+#include "ClientMessage.pb.h"
 
 
 typedef SimpleWeb::SocketServer<SimpleWeb::WS> WSServer;

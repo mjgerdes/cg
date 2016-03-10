@@ -12,7 +12,7 @@
 
 #include "GameServer.hpp"
 #include "Utility.hpp"
-#include "msg/ClientMessage.pb.h"
+#include "ClientMessage.pb.h"
 #include "msg/MessageExtractor.hpp"
 #include "msg/MessageDispatcher.hpp"
 #include "Concurrent/Queue.hpp"
