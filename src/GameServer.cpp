@@ -174,6 +174,7 @@ GameServer::GameServer(WSServer& server, LogServer& logServer)
 GameServer::~GameServer() {}
 
 void GameServer::start() { m_pimpl->listen(); }
+
 void GameServer::registerConnection(const WSConnection& connection) {
 	m_pimpl->registerConnection(connection);
 }
