@@ -3,7 +3,6 @@
 #include <set>
 #include <mutex>
 #include "typedefs.hpp"
-#include "PlayerAccount.hpp"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -17,10 +16,11 @@
 #include "msg/MessageDispatcher.hpp"
 #include "Concurrent/Queue.hpp"
 #include "msg/MessageFactory.hpp"
+#include "db/PlayerAccount.hpp"
 
 using namespace Log;
 using namespace std::placeholders;
-
+using namespace db;
 std::string connectionString(const WSConnection& con) {
 	return Utility::concat(con->remote_endpoint_address, ":",
 						   con->remote_endpoint_port, " (", (size_t)con.get(),
@@ -133,6 +133,8 @@ public:
 
 	void onLogin(const msg::Login* msg, const WSConnection source) {
 		log<dbg>("Hello to ", msg->email());
+
+		
 	}
 
 	void init() {

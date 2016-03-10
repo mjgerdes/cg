@@ -1,3 +1,7 @@
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+
+
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
@@ -54,11 +58,36 @@ file(GLOB CG_SRC_FILES
   "*.hpp"
   "include/*.hpp")
 
+# ODB
+find_package(ODB REQUIRED COMPONENTS mysql)
+include(${ODB_USE_FILE})
 
+#set(CG_ODB_HEADERS
+#"db/PlayerAccount.hpp")
 
+file(GLOB CG_ODB_HEADERS
+  "db/*.hpp")
 
+include_directories(db)
 
-add_executable(cgserver ${CG_SRC_FILES} ${PROTO_SRCS} ${PROTO_HDRS})
+odb_compile(CG_SRC_FILES FILES ${CG_ODB_HEADERS} DB mysql GENERATE_QUERY GENERATE_SESSION)
+
+add_executable(cgserver 
+${CG_SRC_FILES} 
+${PROTO_SRCS} 
+${PROTO_HDRS}
+	${CG_ODB_HEADERS})
+
+target_link_libraries(cgserver
+	${ODB_LIBRARIES})
+
+target_include_directories(cgserver
+	PRIVATE
+		${ODB_INCLUDE_DIRS}
+		${ODB_COMPILE_OUTPUT_DIR})
+target_compile_definitions(cgserver
+	PRIVATE
+		DATABASE_MYSQL)
 
 if("${FSAN}" STREQUAL "thread")
   target_link_libraries(cgserver ${BOOST160_TSAN_ROOT}/lib/libboost_regex.a)
@@ -71,6 +100,8 @@ target_link_libraries(cgserver ${OPENSSL_CRYPTO_LIBRARY})
 target_link_libraries(cgserver ${CMAKE_THREAD_LIBS_INIT})
 
 set_target_properties(cgserver PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+
+
 
 
 if(MSYS)

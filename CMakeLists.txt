@@ -19,12 +19,10 @@ endif()
 message("Selecting sanitizer: ${FSAN}")
 
 set(CMAKE_CXX_COMPILER clang++)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -fsanitize=address ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas")
+set(ODB_SHUT_UP_FLAG "-Wno-unknown-pragmas")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O3")
-
-
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -fsanitize=${FSAN}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -fsanitize=${FSAN}  ${ODB_SHUT_UP_FLAG}")
 
 add_definitions(-std=c++14)
 configure_file(

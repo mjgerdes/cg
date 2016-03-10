@@ -20,6 +20,28 @@ Building CG requires several prerequisites. You should
  - have libssl installed.
  - have other fun dependencies installed! The CMake system and the compiler will guide you :)
 
+
+
+Installing ODB
+----------
+
+You can get sources from the ODB website. Alternatively, on Ubuntu you may use this PPA at your own risk.
+
+deb http://ppa.launchpad.net/paulbovbel/ppa/ubuntu trusty main 
+deb-src http://ppa.launchpad.net/paulbovbel/ppa/ubuntu trusty main 
+
+Then install the following packages:
+
+$ sudo apt-get install libodb-mysql-2.4 libodb-2.4 libodb-mysql-dev libodb-dev
+
+You also need the ODB compiler (odb), which has to be built from source.
+
+To use a database (mysql by default), you of course need one installed, including development libraries. For mysql, you can do:
+
+$ sudo apt-get install mysql-server libmysqlclient-dev
+
+Building CG
+==========
 To build, make sure you are in the top level directory of cg. Then do
 
 $ mkdir build
