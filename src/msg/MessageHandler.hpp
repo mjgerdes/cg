@@ -3,7 +3,7 @@
 #ifndef __MESSAGEHANDLER_HPP__
 #define __MESSAGEHANDLER_HPP__
 
-#include "typedefs.hpp"
+#include "pbmsg.hpp"
 
 namespace msg {
 

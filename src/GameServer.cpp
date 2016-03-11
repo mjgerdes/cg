@@ -17,6 +17,7 @@
 #include "Concurrent/Queue.hpp"
 #include "msg/MessageFactory.hpp"
 #include "db/PlayerAccount.hpp"
+#include "database.hpp"
 
 using namespace Log;
 using namespace std::placeholders;
@@ -33,6 +34,7 @@ public:
 
 	WSServer& server;
 	LogServer& logServer;
+	db::DBServer dbServer;
 
 	/*! Set of connections that have connected to the server, but
 	  not been authenticated. */
@@ -74,7 +76,7 @@ public:
 
 public:
 	GameServerImpl(WSServer& serv, LogServer& logServ)
-		: server(serv), logServer(logServ), m_clientMessageFactory(1) {
+		: server(serv), logServer(logServ), dbServer(db::makeDatabaseServer()), m_clientMessageFactory(1) {
 		init();
 	}
 

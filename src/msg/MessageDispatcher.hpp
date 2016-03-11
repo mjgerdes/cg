@@ -7,9 +7,13 @@
 #include "msg/MessageHandler.hpp"
 #include <vector>
 #include "optional.hpp"
+#include "msg/pbmsg.hpp"
+
 
 namespace msg {
 using Utility::optional;
+
+
 
 template <typename outerMsg_T, typename msgEnum_T, typename abstractMsg_T,
 		  typename... args_T>

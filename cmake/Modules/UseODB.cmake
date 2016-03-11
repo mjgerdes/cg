@@ -1,5 +1,5 @@
 
-set(ODB_COMPILE_DEBUG FALSE)
+set(ODB_COMPILE_DEBUG TRUE)
 set(ODB_COMPILE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/odb_gen")
 set(ODB_COMPILE_HEADER_SUFFIX ".h")
 set(ODB_COMPILE_INLINE_SUFFIX "_inline.h")
@@ -150,11 +150,11 @@ function(odb_compile outvar)
 			endif()
 		endforeach()
 
-		if(ODB_COMPILE_DEBUG)
+#		if(ODB_COMPILE_DEBUG)
 			set(_msg "${ODB_EXECUTABLE} ${ODB_ARGS} ${input}")
 			string(REPLACE ";" " " _msg "${_msg}")
 			message(STATUS "${_msg}")
-		endif()
+#		endif()
 
 		add_custom_command(OUTPUT ${outputs}
 			COMMAND ${ODB_EXECUTABLE} ${ODB_ARGS} "${input}"

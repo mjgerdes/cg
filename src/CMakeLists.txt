@@ -70,7 +70,16 @@ file(GLOB CG_ODB_HEADERS
 
 include_directories(db)
 
-odb_compile(CG_SRC_FILES FILES ${CG_ODB_HEADERS} DB mysql GENERATE_QUERY GENERATE_SESSION)
+#GET_DIRECTORY_PROPERTY(CG_ODB_INCLUDE_DIRS INCLUDE_DIRECTORIES)
+set(CG_ODB_INCLUDE_DIRS
+  /home/marius/cg/src
+    /home/marius/cg/src/include
+      /home/marius/cg/src/include/websock
+      "${CMAKE_CURRENT_BINARY_DIR}")
+
+set(ODB_COMPILE_DEBUG TRUE)
+odb_compile(CG_SRC_FILES INCLUDE ${CG_ODB_INCLUDE_DIRS} FILES ${CG_ODB_HEADERS} DB mysql GENERATE_QUERY GENERATE_SESSION GENERATE_SCHEMA SCHEMA_FORMAT embedded STANDARD c++11)
+
 
 add_executable(cgserver 
 ${CG_SRC_FILES} 

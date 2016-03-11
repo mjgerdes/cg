@@ -3,7 +3,7 @@
 #ifndef __MESSAGEXTRACTOR_HPP__
 #define __MESSAGEXTRACTOR_HPP__
 
-#include "typedefs.hpp"
+#include "msg/pbmsg.hpp"
 
 namespace msg {
 	template<typename outerMsg_T>
