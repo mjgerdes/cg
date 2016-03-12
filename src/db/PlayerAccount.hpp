@@ -4,34 +4,29 @@
 
 #include <odb/core.hxx>
 #include "typedefs.hpp"
-
-
+//#pragma db namespace pointer(std::unique_ptr)
 namespace db {
-
-
-
 
 #pragma db object
 class PlayerAccount {
 public:
-	// constructor
-	PlayerAccount(WSConnection& currentConnection) : m_currentConnection(currentConnection) {}
-	
+	using id_type = unsigned long;
+
+	PlayerAccount(const std::string& email, const std::string& password) : m_email(email), m_password(password), m_name("") {}
+
+
 private:
 	friend class odb::access;
 
 	PlayerAccount() {}
 
 #pragma db id auto
-	unsigned long m_id;
+	id_type m_id;
 	std::string m_email;
+	std::string m_password;
 	std::string m_name;
-
-#pragma db member transient
-	WSConnection m_currentConnection;
 };  // end class PlayerAccount
 
-} // end namespace db
-
+}  // end namespace db
 
 #endif

@@ -2,21 +2,20 @@
 var ProtoBuf = dcodeIO.ProtoBuf;
 var Builder = ProtoBuf.loadProtoFile("proto/ClientMessage.proto");
 ProtoBuf.loadProtoFile("proto/Login.proto", Builder);
+ProtoBuf.loadProtoFile("proto/Registration.proto", Builder);
 
 
 
 var Message = Builder.build("msg");
 var ClientMessage = Message.ClientMessage;
 var LoginMessage = Message.Login;
+var RegistrationMessage = Message.Registration;
 
 var loginMsg = new LoginMessage("integr@gmail.com","secret");
 var clientMsg = new ClientMessage({
     "msgType" : "LoginType",
     "login":{
  "email":"integr@gmail.com", "password":"secret"}});
-
-
-
 
 var ws;
 window.onload=function(){
@@ -38,10 +37,12 @@ document.getElementById("portal").style.display = "block";
 
   ws.onopen=function(evt){
 //    ws.send("Hello");
-      for(i = 0; i < 1000; i++) {
-      ws.send(clientMsg.toArrayBuffer());
-	  }
-  };
+//      for(i = 0; i < 1000; i++) {
+//      ws.send(clientMsg.toArrayBuffer());
+//	  }
+
+};
+
 };
 
 window.onclose=function(){
@@ -52,5 +53,16 @@ function loginSubmitEvent () {
     var email = document.getElementById("loginEmail").value;
     var password = document.getElementById("loginPassword").value;
     ws.send(email + ":" + password);
+}
+
+
+function registrationSubmitEvent () {
+    var email = document.getElementById("loginEmail").value;
+    var password = document.getElementById("loginPassword").value;
+
+var clientMsg = new ClientMessage({
+	"msgType" : "RegistrationType",
+	"registration" : { "email" : email, "password" : password}});
+ws.send(clientMsg.toArrayBuffer());
 }
 

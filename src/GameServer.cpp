@@ -12,13 +12,14 @@
 #include "GameServer.hpp"
 #include "Utility.hpp"
 #include "ClientMessage.pb.h"
+#include "Registration.pb.h"
 #include "msg/MessageExtractor.hpp"
 #include "msg/MessageDispatcher.hpp"
 #include "Concurrent/Queue.hpp"
 #include "msg/MessageFactory.hpp"
 #include "db/PlayerAccount.hpp"
 #include "database.hpp"
-
+#include "PlayerAccount_odb.h"
 using namespace Log;
 using namespace std::placeholders;
 using namespace db;
@@ -44,7 +45,12 @@ public:
 	std::mutex m_unauthedConnectionsMutex;
 
 	/*! Map from connections to authenticated Player's accounts. */
-	std::map<WSConnection, std::shared_ptr<PlayerAccount>> m_authedConnections;
+	//	std::map<WSConnection, std::shared_ptr<PlayerAccount>>
+	// m_authedConnections;
+	using PlayerAccount_ptr = std::unique_ptr<PlayerAccount>;
+	using PlayerAccountConnections = std::map<WSConnection, PlayerAccount_ptr>;
+
+	PlayerAccountConnections m_connections;
 
 	using clientMessageFactory_type = msg::MessageFactory<msg::ClientMessage>;
 	clientMessageFactory_type m_clientMessageFactory;
@@ -76,7 +82,10 @@ public:
 
 public:
 	GameServerImpl(WSServer& serv, LogServer& logServ)
-		: server(serv), logServer(logServ), dbServer(db::makeDatabaseServer()), m_clientMessageFactory(1) {
+		: server(serv),
+		  logServer(logServ),
+		  dbServer(db::makeDatabaseServer()),
+		  m_clientMessageFactory(1) {
 		init();
 	}
 
@@ -135,9 +144,62 @@ public:
 
 	void onLogin(const msg::Login* msg, const WSConnection source) {
 		log<dbg>("Hello to ", msg->email());
+		if (m_unauthedConnections.find(source) ==
+			m_unauthedConnections.cend()) {
+			log<net>("Player `", msg->email(), "` is already connected: ",
+					 connectionString(source));
+			// send loginFailure response msg
+			return;
+		}
 
-		
-	}
+		using query = odb::query<db::PlayerAccount>;
+
+		auto transaction = dbServer->begin();
+		auto player = PlayerAccount_ptr{dbServer->query_one<db::PlayerAccount>(
+			query::email == msg->email())};
+		transaction->commit();
+
+		if (!player) {
+			log<net>("Invalid login from player `", msg->email(),
+					 "` with connection: ", connectionString(source));
+			// send invalidLogin message
+			return;
+		}
+
+		m_connections[source] = std::move(player);
+
+	}  // end onLogin
+
+	void onRegistration(const msg::Registration* msg, WSConnection source) {
+		log<net>("Registering player from connection: ",
+				 connectionString(source));
+		using query = odb::query<db::PlayerAccount>;
+		{
+		odb::transaction t(dbServer->begin());
+		auto maybePlayer = PlayerAccount_ptr{
+			dbServer->query_one<db::PlayerAccount>(query::email == msg->email())};
+		t.commit();
+
+		if (maybePlayer) {
+			log<net>("Invalid registration attempt; player `", msg->email(),
+					 "` already exists. From connection: ",
+					 connectionString(source));
+			// send invalid registration msg
+			return;
+		}
+		}
+
+		auto newPlayer =
+			std::make_unique<PlayerAccount>(msg->email(), msg->password());
+
+		odb::transaction insertTransaction(dbServer->begin());
+		dbServer->persist(*newPlayer);
+		insertTransaction.commit();
+
+		m_unauthedConnections.erase(source);
+		m_connections[source] = std::move(newPlayer);
+		log<net>("Player `", msg->email(), " successfully registered");
+	}  // end onRegistration
 
 	void init() {
 		log<dbg>("Initializing GameServer\n");
@@ -146,7 +208,7 @@ public:
 		auto reg = m_dispatcher.getRegisterFunction(this);
 		reg.entry<Login>(ClientMessage::LoginType, &ClientMessage::login,
 						 &Impl::onLogin);
-
+		reg.entry<Registration>(ClientMessage::RegistrationType, &ClientMessage::registration, &Impl::onRegistration);
 		auto& index = server.endpoint["^/index/?$"];
 
 		auto& gameServer(*this);
