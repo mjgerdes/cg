@@ -52,6 +52,7 @@ public:
 
 	PlayerAccountConnections m_connections;
 
+	enum ConnectionStatus { unauthed = 0, authed = 1 };
 	using clientMessageFactory_type = msg::MessageFactory<msg::ClientMessage>;
 	clientMessageFactory_type m_clientMessageFactory;
 
@@ -65,12 +66,7 @@ public:
 			: source(other.source), msg(std::move(other.msg)) {}
 		MessageQueueElement(const MessageQueueElement&& other)
 			: source(other.source), msg(std::move(other.msg)) {}
-		//		MessageQueueElement(const MessageQueueElement&) = delete;
-		//		const MessageQueueElement& operator=(const MessageQueueElement&)
-		//=
-		// delete;
-		//		void operator=(MessageQueueElement&&) = delete;
-		//		void operator=(const MessageQueueElement&&) = delete;
+
 		WSConnection source;
 		const ClientMessage_ptr msg;
 	};  // end MessageQueueElement
@@ -142,10 +138,26 @@ public:
 		m_messageQueue.emplace(connection, std::move(cmsg));
 	}
 
+	ConnectionStatus connectionStatusOf(const WSConnection& connection) {
+		if (m_connections.find(connection) != m_connections.cend()) {
+			return authed;
+		}
+
+		if (m_unauthedConnections.find(connection) ==
+			m_unauthedConnections.cend()) {
+			// this really should not happen, but im leaving the check for
+			// development
+			log<dbg>(
+				"error in connectionStatusOf: Invalid state of connection: "
+				"connection exists but is not tracked by the server. Source: ",
+				connectionString(connection));
+		}
+		return unauthed;
+	}  // end connectionStatusOf
+
 	void onLogin(const msg::Login* msg, const WSConnection source) {
 		log<dbg>("Hello to ", msg->email());
-		if (m_unauthedConnections.find(source) ==
-			m_unauthedConnections.cend()) {
+		if (connectionStatusOf(source) == authed) {
 			log<net>("Player `", msg->email(), "` is already connected: ",
 					 connectionString(source));
 			// send loginFailure response msg
@@ -173,20 +185,28 @@ public:
 	void onRegistration(const msg::Registration* msg, WSConnection source) {
 		log<net>("Registering player from connection: ",
 				 connectionString(source));
-		using query = odb::query<db::PlayerAccount>;
-		{
-		odb::transaction t(dbServer->begin());
-		auto maybePlayer = PlayerAccount_ptr{
-			dbServer->query_one<db::PlayerAccount>(query::email == msg->email())};
-		t.commit();
 
-		if (maybePlayer) {
-			log<net>("Invalid registration attempt; player `", msg->email(),
-					 "` already exists. From connection: ",
+		if (connectionStatusOf(source) != unauthed) {
+			log<net>("Registration attempt from an already registered User : ",
 					 connectionString(source));
 			// send invalid registration msg
-			return;
 		}
+
+		using query = odb::query<db::PlayerAccount>;
+		{
+			odb::transaction t(dbServer->begin());
+			auto maybePlayer =
+				PlayerAccount_ptr{dbServer->query_one<db::PlayerAccount>(
+					query::email == msg->email())};
+			t.commit();
+
+			if (maybePlayer) {
+				log<net>("Invalid registration attempt; player `", msg->email(),
+						 "` already exists. From connection: ",
+						 connectionString(source));
+				// send invalid registration msg
+				return;
+			}
 		}
 
 		auto newPlayer =
@@ -208,7 +228,9 @@ public:
 		auto reg = m_dispatcher.getRegisterFunction(this);
 		reg.entry<Login>(ClientMessage::LoginType, &ClientMessage::login,
 						 &Impl::onLogin);
-		reg.entry<Registration>(ClientMessage::RegistrationType, &ClientMessage::registration, &Impl::onRegistration);
+		reg.entry<Registration>(ClientMessage::RegistrationType,
+								&ClientMessage::registration,
+								&Impl::onRegistration);
 		auto& index = server.endpoint["^/index/?$"];
 
 		auto& gameServer(*this);
