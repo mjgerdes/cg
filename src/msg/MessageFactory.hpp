@@ -25,25 +25,20 @@ public:
 		RecycleMessage(const RecycleMessage&) = delete;
 		//		RecycleMessage& operator=(const RecycleMessage&) = delete;
 		//				const RecycleMessage& operator=(const RecycleMessage&) =
-		//delete;
+		// delete;
 		//		void operator=(RecycleMessage&&) = delete;
 		//				void operator=(const RecycleMessage&&) = delete;
 		RecycleMessage(RecycleMessage&& other)
 			: m_owner(other.m_owner),
 			  m_index(other.releaseIndex()),
 			  m_mutex(other.m_mutex),
-			  m_msg(other.m_msg) {
-			std::cout << "MOVE (NONCONST)\n";
-		}
+			  m_msg(other.m_msg) {}
 		RecycleMessage(const RecycleMessage&& other)
 			: m_owner(other.m_owner),
 			  m_index(other.releaseIndex()),
 			  m_mutex(other.m_mutex),
-			  m_msg(other.m_msg) {
-			std::cout << "MOVE\n";
-		}
+			  m_msg(other.m_msg) {}
 		~RecycleMessage() {
-			std::cout << "DELETE\n";
 			if (m_index != ~0) {
 				m_owner->recycle(m_index);
 			}
@@ -64,9 +59,7 @@ public:
 	private:
 		RecycleMessage(owner_type* owner, const index_type index,
 					   std::mutex* mutex, message_type& msg)
-			: m_owner(owner), m_index(index), m_mutex(mutex), m_msg(msg) {
-			std::cout << "CONSTRUCT\n";
-		}
+			: m_owner(owner), m_index(index), m_mutex(mutex), m_msg(msg) {}
 
 	private:
 		owner_type* m_owner;
@@ -87,7 +80,6 @@ public:
 	}
 
 	RecycleMessage makeRecycleMessage() {
-		std::cout << "making message\n";
 		const auto i = getFreeIndex();
 		return std::move(
 			RecycleMessage(this, i, &(*(m_mutexArena[i])), m_arena[i]));
@@ -114,36 +106,32 @@ private:
 
 	void recycle(const index_type i) {
 		std::unique_lock<std::mutex> indexLock(m_indexMutex);
-		std::cout << "Recycling\n" << m_arena.size() << std::endl;
+
 		m_freeMessageIndices.push_back(i);
 		indexLock.unlock();
 		m_fullyStockedCond.notify_one();
 	}
 
 	void grow() {
-		std::cout << "Entered grow()\n";
 		if (m_isGrowing) {
-			std::cout << "Already growing, nevermind\n";
 			return;
 		}
 		m_isGrowing = true;
-		std::cout << "Acquiring lock\n";
+
 		std::unique_lock<std::mutex> indexLock(m_indexMutex);
-		std::cout << "Lock acquired\n";
+
 		m_fullyStockedCond.wait(indexLock,
 								[=]() { return this->isFullyStocked(); });
 
-		std::cout << "Fully stocked, proceeding to grow\n";
 		const auto size = m_arena.size();
 		const auto newSize = size * 2;
-		std::cout << "Growing to " << newSize << std::endl;
 
 		for (uint n = size; n < newSize; ++n) {
 			m_freeMessageIndices.push_back(n);
 			m_mutexArena.emplace_back(new std::mutex);
 		}
 		m_arena.resize(newSize);
-		std::cout << "IndicesSize: " << m_freeMessageIndices.size() << "\nArena size: " << m_arena.size() << std::endl;
+
 		m_isGrowing = false;
 	}
 
