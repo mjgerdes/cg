@@ -58,7 +58,7 @@ private:
 		std::unique_ptr<extractorBase_type> extractor;
 		std::unique_ptr<handlerBase_type> handler;
 	};  // end struct DisptachEntry
-
+public:
 	template <typename parentInstance_T>
 	struct RegisterHelper {
 		this_type* m_dispatcher;

@@ -54,6 +54,8 @@ include_directories(include)
 file(GLOB CG_SRC_FILES
   "*.cpp"
   "msg/*.cpp"
+  "GameServer/*.cpp"
+  "Module/*.cpp"
   "msg/*.cc"
   "*.hpp"
   "include/*.hpp")

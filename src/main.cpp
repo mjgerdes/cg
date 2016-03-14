@@ -2,11 +2,12 @@
 
 #include <sstream>
 
-#include "websock/server_ws.hpp"
+
 #include "websock/client_ws.hpp"
 #include "typedefs.hpp"
 #include "GameServer.hpp"
 #include "LogServer.hpp"
+#include "Module/AuthModule.hpp"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ int main(int argc, char** argv) {
 	logServer.log<Log::net>("Logging started");
 
 	auto gameServer = std::make_unique<GameServer>(server, logServer);
-
+	gameServer->emplaceModule<AuthModule>(gameServer->getDB(), gameServer->getLogServer());
 	thread log_thread([&logServer]() { logServer.start(); });
 
 	thread server_thread([&server, &logServer, port, threads]() {

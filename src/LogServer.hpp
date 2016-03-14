@@ -3,7 +3,7 @@
 #define __LOGSERVER_HPP__
 
 #include "Utility.hpp"
-
+#include <iostream>
 class LogServer {
 public:
 	struct LogMessage {
