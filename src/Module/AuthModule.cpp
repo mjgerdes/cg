@@ -16,6 +16,11 @@ void AuthModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	reg.entry<Registration>(ClientMessage::RegistrationType,
 							&ClientMessage::registration,
 							&AuthModule::onRegistration);
+	reg.entry<Disconnect>(ClientMessage::DisconnectType,
+						  &ClientMessage::disconnect,
+						  &AuthModule::onDisconnect);
+	reg.entry<Connect>(ClientMessage::ConnectType, &ClientMessage::connect,
+					   &AuthModule::onConnect);
 }
 
 AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
@@ -93,3 +98,15 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 	m_connections[source] = std::move(newPlayer);
 	logServer.log<net>("Player `", msg->email(), " successfully registered");
 }  // end onRegistration
+
+
+void AuthModule::onDisconnect(const msg::Disconnect* msg, WSConnection connection) {
+	if(connectionStatusOf(connection) == authed) {
+		logServer.log<net>("Disconnect; releasing auth for connection ", Utility::connectionString(connection));
+		m_connections.erase(connection);
+	}
+} // end onDisconnect
+
+void AuthModule::onConnect(const msg::Connect* msg, WSConnection newConnection) {
+
+} // end onConnect

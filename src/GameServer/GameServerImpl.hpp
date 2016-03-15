@@ -82,11 +82,11 @@ public:
 				 fullString);
 		server.send(reciever, std::move(msg));
 	}
-
+		
 	void init();
 	void loadModule(Module_ptr);
-	void unregisterConnection(WSConnection connection);
-	void registerConnection(const WSConnection& connection);
+
+	void onOpenEvent(WSConnection);
 	void onCloseEvent(WSConnection connection, int status,
 					  const std::string& reason);
 	void onMessageEvent(WSConnection connection, WSMessage serverMessage);

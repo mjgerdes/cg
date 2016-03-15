@@ -15,13 +15,17 @@ public:
 		: dbServer(db), logServer(*ls) {}
 	ConnectionStatus connectionStatusOf(const WSConnection& connection);
 
+
+private:
+// private member functions
 	void onLogin(const msg::Login* msg, const WSConnection source);
 	void onRegistration(const msg::Registration* msg, WSConnection source);
+	void onDisconnect(const msg::Disconnect* msg, WSConnection source);
+	void onConnect(const msg::Connect* msg, WSConnection source);
 
-private:
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
-
 private:
+// private data members
 	GameServer::Database_type* dbServer;
 	GameServer::LogServer_type& logServer;
 

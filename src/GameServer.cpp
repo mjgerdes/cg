@@ -9,10 +9,6 @@ GameServer::~GameServer() {}
 
 void GameServer::start() { m_pimpl->listen(); }
 
-void GameServer::registerConnection(const WSConnection& connection) {
-	m_pimpl->registerConnection(connection);
-}
-
 void GameServer::forwardModule(std::unique_ptr<StandardModule> module) {
 	m_pimpl->loadModule(std::move(module));
 }

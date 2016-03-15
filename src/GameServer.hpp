@@ -26,7 +26,7 @@ public:
 	~GameServer();
 	GameServer(const GameServer& other) = delete;
 
-	void registerConnection(const WSConnection& connection);
+
 	void start();
 	Database_type* getDB();
 	LogServer_type* getLogServer();

@@ -23,18 +23,25 @@ void Impl::loadModule(Module_ptr module) {
 	m_modules.push_front(std::move(module));
 }
 
-void Impl::unregisterConnection(WSConnection connection) {}
-
-void Impl::registerConnection(const WSConnection& connection) {
-	log<net>("Initiating login handshake with ", connectionString(connection));
+void Impl::onOpenEvent(WSConnection connection) {
+	logServer.log<net>("Opened connection to", connectionString(connection));
 	sendRaw(connection, "AUTHPLS");
+
+	// send internal connection message
+	auto msg = m_clientMessageFactory.makeRecycleMessage();
+	msg->set_msgtype(msg::ClientMessage::ConnectType);
+	m_messageQueue.emplace(connection, std::move(msg));
 }
 
 void Impl::onCloseEvent(WSConnection connection, int status,
 						const std::string& reason) {
-	unregisterConnection(connection);
 	log<net>("Closed connection to ", connectionString(connection),
 			 " with status code ", status);
+
+	// send internal disconnect message
+	auto msg = m_clientMessageFactory.makeRecycleMessage();
+	msg->set_msgtype(msg::ClientMessage::DisconnectType);
+	m_messageQueue.emplace(connection, std::move(msg));
 }
 
 void Impl::onMessageEvent(WSConnection connection, WSMessage serverMessage) {
@@ -54,26 +61,9 @@ void Impl::onMessageEvent(WSConnection connection, WSMessage serverMessage) {
 
 void Impl::init() {
 	log<dbg>("Initializing GameServer\n");
-
-	using namespace msg;
-	//	auto reg = m_dispatcher.getRegisterFunction(this);
-	/*
-		reg.entry<Login>(ClientMessage::LoginType, &ClientMessage::login,
-						 &Impl::onLogin);
-		reg.entry<Registration>(ClientMessage::RegistrationType,
-								&ClientMessage::registration,
-								&Impl::onRegistration);
-	*/
 	auto& index = server.endpoint["^/index/?$"];
 
-	auto& gameServer(*this);
-	auto& logServer(this->logServer);
-	index.onopen = [&gameServer, &logServer](
-		std::shared_ptr<WSServer::Connection> connection) {
-		logServer.log<net>("Opened connection to",
-						   connectionString(connection));
-		gameServer.registerConnection(connection);
-	};
+	index.onopen = std::bind(&Impl::onOpenEvent, this, _1);
 	index.onclose = std::bind(&Impl::onCloseEvent, &(*this), _1, _2, _3);
 	index.onmessage = std::bind(&Impl::onMessageEvent, &(*this), _1, _2);
 }
