@@ -1,0 +1,9 @@
+
+package msg;
+
+import "LoginResponse.proto";
+message ServerMessage {
+  enum ServerMessageType { LoginResponseType = 1; };
+  required ServerMessageType msgType = 1;
+  optional LoginResponse loginResponse = 2;
+}

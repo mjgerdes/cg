@@ -1,0 +1,6 @@
+
+package msg;
+
+message LoginResponse {
+required bool success = 1;
+}

@@ -17,10 +17,8 @@
 #include "NetUtility.hpp"
 
 
-
 namespace msg {
 	class ClientMessage;
-class ServerMessage;
 }
 
 struct GameServer::GameServerImpl {
@@ -43,6 +41,8 @@ public:
 	using clientMessageFactory_type = msg::MessageFactory<msg::ClientMessage>;
 	clientMessageFactory_type m_clientMessageFactory;
 
+	GameServer::StandardServerMessageFactory m_serverMessageFactory;
+	
 	using ClientMessage_ptr = clientMessageFactory_type::RecycleMessage;
 	struct MessageQueueElement {
 		MessageQueueElement(const WSConnection& con,

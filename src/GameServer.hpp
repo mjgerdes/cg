@@ -5,13 +5,10 @@
 
 #include "msg/MessageDispatcher.hpp"
 #include "typedefs.hpp"
-
 #include <memory>
 #include "Module.hpp"
-
-namespace msg {
-	class ServerMessage;
-}
+#include "msg/MessageFactory.hpp"
+#include "ServerMessage.pb.h"
 
 namespace odb {
 	class database;
@@ -30,7 +27,9 @@ public:
 							   msg::ClientMessage::ClientMessageType,
 							   msg::pbmsg_type, WSConnection>;
 	using StandardSendFunction = std::function<void(const msg::ServerMessage*, WSConnection&)>;
-	using StandardModule = Module<StandardMessageDispatcher, StandardSendFunction>;
+	using StandardServerMessageFactory = msg::MessageFactory<msg::ServerMessage>;
+	using StandardServerMessageFactoryFunction = std::function<typename StandardServerMessageFactory::RecycleMessage()>;
+	using StandardModule = Module<StandardMessageDispatcher, StandardSendFunction, StandardServerMessageFactoryFunction>;
 	using Database_type = db::DBServer;
 	using Database_ptr = std::unique_ptr<Database_type>;
 	using LogServer_type = LogServer;

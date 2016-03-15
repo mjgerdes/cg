@@ -25,6 +25,12 @@ void AuthModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 					   &AuthModule::onConnect);
 }
 
+void AuthModule::sendLoginResponse(bool wasSuccessful, WSConnection destination) {
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::LoginResponseType);
+	msg->mutable_loginresponse()->set_success(wasSuccessful);
+	sendMessage(&(*msg), destination);
+} // end sendLoginResponse
 AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
 	const WSConnection& connection) {
 	if (m_connections.find(connection) != m_connections.cend()) {
@@ -38,7 +44,7 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	if (connectionStatusOf(source) == authed) {
 		logServer.log<net>("Player `", msg->email(), "` is already connected: ",
 						   connectionString(source));
-		// send loginFailure response msg
+
 		return;
 	}
 

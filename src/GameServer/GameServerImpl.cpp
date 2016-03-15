@@ -16,7 +16,8 @@ Impl::GameServerImpl(WSServer& serv, LogServer& logServ)
 	: server(serv),
 	  logServer(logServ),
 	  dbServer(db::makeDatabaseServer()),
-	  m_clientMessageFactory(1) {
+	  m_clientMessageFactory(1),
+	  m_serverMessageFactory(1){
 	init();
 }
 
@@ -28,6 +29,7 @@ void Impl::sendMessage(const msg::ServerMessage* msg, WSConnection& destination)
 
 void Impl::loadModule(Module_ptr module) {
 	module->bindSendFunction(std::bind(&Impl::sendMessage, this, _1, _2));
+	module->bindServerMessageFactoryFunction(std::bind(&GameServer::StandardServerMessageFactory::makeRecycleMessage, &m_serverMessageFactory));
 	module->bindHandlers(&m_dispatcher);
 	m_modules.push_front(std::move(module));
 }

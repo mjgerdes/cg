@@ -13,6 +13,7 @@ public:
 public:
 	AuthModule(GameServer::Database_type* db, GameServer::LogServer_type* ls)
 		: dbServer(db), logServer(*ls) {}
+	void sendLoginResponse(bool wasSuccessful, WSConnection destination);
 	ConnectionStatus connectionStatusOf(const WSConnection& connection);
 
 
