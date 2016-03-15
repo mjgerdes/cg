@@ -2,6 +2,7 @@
 
 #include "GameServer.hpp"
 #include "GameServer/GameServerImpl.hpp"
+#include "database.hpp"
 
 GameServer::GameServer(WSServer& server, LogServer& logServer)
 	: m_pimpl(std::make_unique<GameServer::Impl>(server, logServer)) {}

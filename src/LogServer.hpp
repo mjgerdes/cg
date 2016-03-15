@@ -4,6 +4,8 @@
 
 #include "Utility.hpp"
 #include <iostream>
+#include <memory>
+
 class LogServer {
 public:
 	struct LogMessage {

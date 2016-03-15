@@ -5,10 +5,23 @@
 
 #include "msg/MessageDispatcher.hpp"
 #include "typedefs.hpp"
+
 #include <memory>
 #include "Module.hpp"
-#include "LogServer.hpp"
-#include "database.hpp"
+
+namespace msg {
+	class ServerMessage;
+}
+
+namespace odb {
+	class database;
+}
+
+namespace db {
+	using DBServer = ::odb::database;
+}
+
+class LogServer;
 
 class GameServer {
 public:
@@ -16,10 +29,10 @@ public:
 		msg::MessageDispatcher<msg::ClientMessage,
 							   msg::ClientMessage::ClientMessageType,
 							   msg::pbmsg_type, WSConnection>;
-
-	using StandardModule = Module<StandardMessageDispatcher>;
+	using StandardSendFunction = std::function<void(const msg::ServerMessage*, WSConnection&)>;
+	using StandardModule = Module<StandardMessageDispatcher, StandardSendFunction>;
 	using Database_type = db::DBServer;
-	using Database_ptr = db::DBServer_ptr;
+	using Database_ptr = std::unique_ptr<Database_type>;
 	using LogServer_type = LogServer;
 
 	GameServer(WSServer& server, LogServer& logServer);

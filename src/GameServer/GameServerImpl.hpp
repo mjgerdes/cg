@@ -4,24 +4,24 @@
 #define __GAMESERVERIMPL_HPP__
 
 #include <forward_list>
-#include <set>
 #include <mutex>
 #include "typedefs.hpp"
 #include <iostream>
 #include <sstream>
-#include <vector>
-#include <map>
 #include <functional>
-
 #include "msg/MessageDispatcher.hpp"
 #include "Concurrent/Queue.hpp"
 #include "msg/MessageFactory.hpp"
 #include "LogServer.hpp"
 #include "Utility.hpp"
-#include "ClientMessage.pb.h"
-#include "Registration.pb.h"
-#include "msg/MessageExtractor.hpp"
 #include "NetUtility.hpp"
+
+
+
+namespace msg {
+	class ClientMessage;
+class ServerMessage;
+}
 
 struct GameServer::GameServerImpl {
 public:
@@ -82,7 +82,8 @@ public:
 				 fullString);
 		server.send(reciever, std::move(msg));
 	}
-		
+
+	void sendMessage(const msg::ServerMessage* msg, WSConnection& destination);
 	void init();
 	void loadModule(Module_ptr);
 

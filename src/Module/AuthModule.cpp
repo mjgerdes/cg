@@ -1,6 +1,8 @@
 
+#include "LogServer.hpp"
 #include "Module/AuthModule.hpp"
 #include "NetUtility.hpp"
+#include "database.hpp"
 #include "db/PlayerAccount.hpp"
 #include "PlayerAccount_odb.h"
 

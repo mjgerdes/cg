@@ -2,6 +2,8 @@
 #include "GameServer.hpp"
 #include "GameServer/GameServerImpl.hpp"
 #include "NetUtility.hpp"
+#include "database.hpp"
+#include "ServerMessage.pb.h"
 
 using namespace Utility;
 using namespace Log;
@@ -18,7 +20,14 @@ Impl::GameServerImpl(WSServer& serv, LogServer& logServ)
 	init();
 }
 
+void Impl::sendMessage(const msg::ServerMessage* msg, WSConnection& destination) {
+	std::string temp;
+	msg->SerializeToString(&temp);
+	sendRaw(destination, std::move(temp));
+} // end sendMessage
+
 void Impl::loadModule(Module_ptr module) {
+	module->bindSendFunction(std::bind(&Impl::sendMessage, this, _1, _2));
 	module->bindHandlers(&m_dispatcher);
 	m_modules.push_front(std::move(module));
 }
