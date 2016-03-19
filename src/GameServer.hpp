@@ -33,6 +33,7 @@ public:
 	using Database_type = db::DBServer;
 	using Database_ptr = std::unique_ptr<Database_type>;
 	using LogServer_type = LogServer;
+	using ConnectionId = WSRawConnection*;
 
 	GameServer(WSServer& server, LogServer& logServer);
 	~GameServer();

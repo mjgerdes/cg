@@ -1,0 +1,6 @@
+
+package msg;
+
+message RegistrationResponse {
+required bool success = 1;
+}

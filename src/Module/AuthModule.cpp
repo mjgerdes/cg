@@ -25,15 +25,25 @@ void AuthModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 					   &AuthModule::onConnect);
 }
 
-void AuthModule::sendLoginResponse(bool wasSuccessful, WSConnection destination) {
+void AuthModule::sendLoginResponse(bool wasSuccessful,
+								   WSConnection destination) {
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::LoginResponseType);
 	msg->mutable_loginresponse()->set_success(wasSuccessful);
 	sendMessage(&(*msg), destination);
-} // end sendLoginResponse
+}  // end sendLoginResponse
+
+void AuthModule::sendRegistrationResponse(bool wasSuccessful,
+								   WSConnection destination) {
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::RegistrationResponseType);
+	msg->mutable_resgistrationresponse()->set_success(wasSuccessful);
+	sendMessage(&(*msg), destination);
+}  // end sendLoginResponse
+
 AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
 	const WSConnection& connection) {
-	if (m_connections.find(connection) != m_connections.cend()) {
+	if (m_connections.find(&*(connection)) != m_connections.cend()) {
 		return authed;
 	}
 	return unauthed;
@@ -58,12 +68,12 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	if (!player) {
 		logServer.log<net>("Invalid login from player `", msg->email(),
 						   "` with connection: ", connectionString(source));
-		// send invalidLogin message
+		sendLoginResponse(false, source);
 		return;
 	}
 
-	m_connections[source] = std::move(player);
-
+	m_connections[&(*source)] = std::move(player);
+	sendLoginResponse(true, source);
 }  // end onLogin
 
 void AuthModule::onRegistration(const msg::Registration* msg,
@@ -103,18 +113,18 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 	dbServer->persist(*newPlayer);
 	insertTransaction.commit();
 
-	m_connections[source] = std::move(newPlayer);
+	m_connections[&(*source)] = std::move(newPlayer);
 	logServer.log<net>("Player `", msg->email(), " successfully registered");
 }  // end onRegistration
 
-
-void AuthModule::onDisconnect(const msg::Disconnect* msg, WSConnection connection) {
-	if(connectionStatusOf(connection) == authed) {
-		logServer.log<net>("Disconnect; releasing auth for connection ", Utility::connectionString(connection));
-		m_connections.erase(connection);
+void AuthModule::onDisconnect(const msg::Disconnect* msg,
+							  WSConnection connection) {
+	if (connectionStatusOf(connection) == authed) {
+		logServer.log<net>("Disconnect; releasing auth for connection ",
+						   Utility::connectionString(connection));
+		m_connections.erase(&(*connection));
 	}
-} // end onDisconnect
+}  // end onDisconnect
 
-void AuthModule::onConnect(const msg::Connect* msg, WSConnection newConnection) {
-
-} // end onConnect
+void AuthModule::onConnect(const msg::Connect* msg,
+						   WSConnection newConnection) {}  // end onConnect

@@ -38,6 +38,7 @@ void Impl::onOpenEvent(WSConnection connection) {
 	logServer.log<net>("Opened connection to", connectionString(connection));
 	sendRaw(connection, "AUTHPLS");
 
+
 	// send internal connection message
 	auto msg = m_clientMessageFactory.makeRecycleMessage();
 	msg->set_msgtype(msg::ClientMessage::ConnectType);

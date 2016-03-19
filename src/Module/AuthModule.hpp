@@ -2,6 +2,8 @@
 #ifndef __AUTHMODULE_HPP__
 #define __AUTHMODULE_HPP__
 
+#include <boost/container/flat_map.hpp>
+
 #include "GameServer.hpp"
 #include "db/PlayerAccount.hpp"
 
@@ -14,6 +16,7 @@ public:
 	AuthModule(GameServer::Database_type* db, GameServer::LogServer_type* ls)
 		: dbServer(db), logServer(*ls) {}
 	void sendLoginResponse(bool wasSuccessful, WSConnection destination);
+		void sendRegistrationResponse(bool wasSuccessful, WSConnection destination);
 	ConnectionStatus connectionStatusOf(const WSConnection& connection);
 
 
@@ -32,7 +35,7 @@ private:
 
 	/*! Map from connections to authenticated Player's accounts. */
 	using PlayerAccount_ptr = std::unique_ptr<db::PlayerAccount>;
-	using PlayerAccountConnections = std::map<WSConnection, PlayerAccount_ptr>;
+	using PlayerAccountConnections = boost::container::flat_map<GameServer::ConnectionId, PlayerAccount_ptr>;
 
 	PlayerAccountConnections m_connections;
 

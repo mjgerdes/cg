@@ -26,17 +26,12 @@ public:
 	using Impl = GameServer::GameServerImpl;
 	using net = Log::net;
 	using dbg = Log::dbg;
+	using ConnectionId = GameServer::ConnectionId;
 
 	WSServer& server;
 	GameServer::LogServer_type& logServer;
 	GameServer::Database_ptr dbServer;
 
-	/*! Set of connections that have connected to the server, but
-	  not been authenticated. */
-	//	std::set<WSConnection> m_unauthedConnections;
-
-	/*! Mutex for unauthed connections. */
-	//	std::mutex m_unauthedConnectionsMutex;
 
 	using clientMessageFactory_type = msg::MessageFactory<msg::ClientMessage>;
 	clientMessageFactory_type m_clientMessageFactory;
