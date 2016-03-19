@@ -11,6 +11,7 @@
 /boost-1.60-tsan
 /build
 /cmake_install.cmake
+/doc
 /log.txt
 /mrun.sh
 /run.sh
