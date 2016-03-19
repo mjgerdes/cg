@@ -11,12 +11,14 @@ this.registerHandler = function(msgType, f) {
 var handlers = {}
 var ws = new WebSocket("ws://localhost:8080/index");
   ws.onmessage = function(evt) {
-    try {
+//    try {
         // Decode the Message
-        var msg = Message.decode(evt.data);
-		handlers[msg.msgType()](msg);
-    } catch (err) {
-alert("Could not decode message.");
-    }
+var bytebuffer = dcodeIO.ByteBuffer;
+var bb = new bytebuffer();
+	  bb = bytebuffer.wrap(evt.data, "utf8");
+        var msg = ServerMessage.decode(bb);
+		handlers[msg.msgType](msg);
+//    } catch (err) {
+//    }
 };
 });

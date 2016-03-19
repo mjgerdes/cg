@@ -1,12 +1,10 @@
 
 app.controller('LoginController', function ($scope, WebSockService) {
 
+WebSockService.registerHandler(ServerMessage.ServerMessageType.RegistrationResponseType, function(msg) {
+	alert("Success is " + msg.registrationresponse.success);
+	});
 
-
-    init();
-
-    function init() {
-}
 
 	$scope.register = function() {
 var registerMsg = new ClientMessage({

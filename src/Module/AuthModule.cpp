@@ -85,7 +85,8 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 		logServer.log<net>(
 			"Registration attempt from an already registered User : ",
 			connectionString(source));
-		// send invalid registration msg
+		sendRegistrationResponse(false, source);
+		return;
 	}
 
 	using query = odb::query<db::PlayerAccount>;
@@ -101,7 +102,7 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 							   msg->email(),
 							   "` already exists. From connection: ",
 							   connectionString(source));
-			// send invalid registration msg
+			sendRegistrationResponse(false, source);
 			return;
 		}
 	}
