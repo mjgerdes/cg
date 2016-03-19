@@ -3,6 +3,8 @@
 #include <iostream>
 #include <algorithm>
 #include <mutex>
+#include <thread>
+#include <chrono>
 #include "boost/lockfree/queue.hpp"
 
 #include "LogServer.hpp"
@@ -28,6 +30,9 @@ public:
 			if (m_messageQueue.pop(msg)) {
 				msg->write();
 				delete msg;
+			} else {
+				using namespace std::literals;
+				std::this_thread::sleep_for(3s);
 			}
 		}  // while
 	}
