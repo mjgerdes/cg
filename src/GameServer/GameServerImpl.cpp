@@ -21,7 +21,7 @@ Impl::GameServerImpl(WSServer& serv, LogServer& logServ)
 	init();
 }
 
-void Impl::sendMessage(const msg::ServerMessage* msg, WSConnection& destination) {
+void Impl::sendMessage(const GameServer::StandardSendMessage& msg, WSConnection& destination) {
 	std::string temp;
 	msg->SerializeToString(&temp);
 	sendRaw(destination, std::move(temp));
@@ -36,7 +36,7 @@ void Impl::loadModule(Module_ptr module) {
 
 void Impl::onOpenEvent(WSConnection connection) {
 	logServer.log<net>("Opened connection to", connectionString(connection));
-	sendRaw(connection, "AUTHPLS");
+//	sendRaw(connection, "AUTHPLS");
 
 
 	// send internal connection message

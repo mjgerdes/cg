@@ -30,15 +30,15 @@ void AuthModule::sendLoginResponse(bool wasSuccessful,
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::LoginResponseType);
 	msg->mutable_loginresponse()->set_success(wasSuccessful);
-	sendMessage(&(*msg), destination);
+	sendMessage(msg, destination);
 }  // end sendLoginResponse
 
 void AuthModule::sendRegistrationResponse(bool wasSuccessful,
 								   WSConnection destination) {
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::RegistrationResponseType);
-	msg->mutable_resgistrationresponse()->set_success(wasSuccessful);
-	sendMessage(&(*msg), destination);
+	msg->mutable_registrationresponse()->set_success(wasSuccessful);
+	sendMessage(msg, destination);
 }  // end sendLoginResponse
 
 AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
@@ -114,6 +114,8 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 	insertTransaction.commit();
 
 	m_connections[&(*source)] = std::move(newPlayer);
+	// send successful register response
+	sendRegistrationResponse(true, source);
 	logServer.log<net>("Player `", msg->email(), " successfully registered");
 }  // end onRegistration
 

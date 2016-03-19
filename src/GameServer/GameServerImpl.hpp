@@ -78,7 +78,7 @@ public:
 		server.send(reciever, std::move(msg));
 	}
 
-	void sendMessage(const msg::ServerMessage* msg, WSConnection& destination);
+	void sendMessage(const GameServer::StandardSendMessage& msg, WSConnection& destination);
 	void init();
 	void loadModule(Module_ptr);
 

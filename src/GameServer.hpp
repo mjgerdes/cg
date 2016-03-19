@@ -26,9 +26,10 @@ public:
 		msg::MessageDispatcher<msg::ClientMessage,
 							   msg::ClientMessage::ClientMessageType,
 							   msg::pbmsg_type, WSConnection>;
-	using StandardSendFunction = std::function<void(const msg::ServerMessage*, WSConnection&)>;
 	using StandardServerMessageFactory = msg::MessageFactory<msg::ServerMessage>;
-	using StandardServerMessageFactoryFunction = std::function<typename StandardServerMessageFactory::RecycleMessage()>;
+	using StandardSendMessage = typename StandardServerMessageFactory::RecycleMessage;
+	using StandardSendFunction = std::function<void(const  StandardSendMessage&, WSConnection&)>;
+	using StandardServerMessageFactoryFunction = std::function<StandardSendMessage()>;
 	using StandardModule = Module<StandardMessageDispatcher, StandardSendFunction, StandardServerMessageFactoryFunction>;
 	using Database_type = db::DBServer;
 	using Database_ptr = std::unique_ptr<Database_type>;
