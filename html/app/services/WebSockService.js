@@ -1,4 +1,4 @@
-app.service('WebSockService', function () {
+app.service('WebSockService', function ($rootScope) {
 
 this.sendMsg = function(clientMsg) {
 ws.send(clientMsg.toArrayBuffer());
@@ -17,7 +17,7 @@ var bytebuffer = dcodeIO.ByteBuffer;
 var bb = new bytebuffer();
 	  bb = bytebuffer.wrap(evt.data, "utf8");
         var msg = ServerMessage.decode(bb);
-		handlers[msg.msgType](msg);
+		$rootScope.$apply(function() {handlers[msg.msgType](msg)});
 //    } catch (err) {
 //    }
 };

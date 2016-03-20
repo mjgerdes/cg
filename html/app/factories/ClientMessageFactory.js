@@ -12,6 +12,7 @@ ProtoBuf.loadProtoFile("proto/LoginResponse.proto", Builder);
 var Message = Builder.build("msg");
 var ClientMessage = Message.ClientMessage;
 var ServerMessage = Message.ServerMessage;
+var ServerMessageTypes = ServerMessage.ServerMessageType;
 var LoginMessage = Message.Login;
 var RegistrationMessage = Message.Registration;
 

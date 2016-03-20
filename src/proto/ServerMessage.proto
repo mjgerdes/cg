@@ -7,6 +7,6 @@ import "RegistrationResponse.proto";
 message ServerMessage {
   enum ServerMessageType { LoginResponseType = 1; RegistrationResponseType = 2;};
   required ServerMessageType msgType = 1;
-  optional LoginResponse loginResponse = 2;
+  optional LoginResponse loginresponse = 2;
   optional RegistrationResponse registrationresponse = 3;
 }

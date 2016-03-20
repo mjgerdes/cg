@@ -34,7 +34,7 @@ void AuthModule::sendLoginResponse(bool wasSuccessful,
 }  // end sendLoginResponse
 
 void AuthModule::sendRegistrationResponse(bool wasSuccessful,
-								   WSConnection destination) {
+										  WSConnection destination) {
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::RegistrationResponseType);
 	msg->mutable_registrationresponse()->set_success(wasSuccessful);
@@ -54,16 +54,16 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	if (connectionStatusOf(source) == authed) {
 		logServer.log<net>("Player `", msg->email(), "` is already connected: ",
 						   connectionString(source));
-
+		sendLoginResponse(true, source);
 		return;
 	}
 
 	using query = odb::query<db::PlayerAccount>;
 
-	auto transaction = dbServer->begin();
+	odb::transaction transaction(dbServer->begin());
 	auto player = PlayerAccount_ptr{
 		dbServer->query_one<db::PlayerAccount>(query::email == msg->email())};
-	transaction->commit();
+	transaction.commit();
 
 	if (!player) {
 		logServer.log<net>("Invalid login from player `", msg->email(),
@@ -73,6 +73,7 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	}
 
 	m_connections[&(*source)] = std::move(player);
+
 	sendLoginResponse(true, source);
 }  // end onLogin
 

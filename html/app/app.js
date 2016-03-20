@@ -8,6 +8,10 @@ app.config(function ($routeProvider) {
                 controller: 'LoginController',
                 templateUrl: 'app/partials/login.html'
             })
-
+        .when('/index',
+            {
+                controller: 'IndexController',
+                templateUrl: 'app/partials/indexPage.html'
+            })
         .otherwise({ redirectTo: '/login' });
 });
