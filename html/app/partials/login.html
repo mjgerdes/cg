@@ -1,11 +1,23 @@
-<div class="smallbox">
+<div class="container">
+<div class="row">
+<div class="col-xs-4 col-xs-offset-4">
+<form> 
+<h2>Please log in or register an account</h2>
         <label for="loginEmail">Email</label>
-        <input type="email"data-ng-model="email" placeholder="yourname@email.com" required>
+        <input class="form-control" type="email"data-ng-model="email" placeholder="yourname@email.com" required>
         <label for="loginPassword">Password</label>
-        <input type="password" data-ng-model="password" placeholder="password" required>
-<button data-ng-click="login()">Login</button>
-<button data-ng-click="register()">Register</button>
-<div class="smallbox" data-ng-show="msgp">
+        <input class="form-control" type="password" data-ng-model="password" placeholder="password" required>
+<button class="btn btn-lg btn-primary btn-block" data-ng-click="login()">Login</button>
+<button class="btn btn-lg btn-primary btn-block" data-ng-click="register()">Register</button>
+</form>
+</div>
+<div class="col-xs-4"></div>
+</div><div class="row">
+<div class="col-xs-4 col-xs-offset-4">
+<div class="alert" data-ng-show="msgp">
 <p data-ng-bind="msg"></p>
+</div>
+</div>
+<div class="col-xs-4"></div>
 </div>
 </div>

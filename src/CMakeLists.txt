@@ -45,12 +45,14 @@ find_package(Protobuf REQUIRED)
  include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 file(GLOB PROTOFILES
-  "proto/*.proto")
+  "proto/*.proto"
+  "${SERVERAPP_PROTO_DIR}/*.proto")
 
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS "${PROTOFILES}")
 
 include_directories(.)
 include_directories(include)
+include_directories("${SERVERAPP_SRC_DIR}")
 file(GLOB CG_SRC_FILES
   "*.cpp"
   "msg/*.cpp"
@@ -58,7 +60,10 @@ file(GLOB CG_SRC_FILES
   "Module/*.cpp"
   "msg/*.cc"
   "*.hpp"
-  "include/*.hpp")
+  "include/*.hpp"
+  "${SERVERAPP_SRC_DIR}/*.cpp"
+  "${SERVERAPP_SRC_DIR}/*.hpp"
+  "${SERVERAPP_SRC_DIR}/Module/*.cpp")
 
 # ODB
 find_package(ODB REQUIRED COMPONENTS mysql)
@@ -73,11 +78,18 @@ file(GLOB CG_ODB_HEADERS
 include_directories(db)
 
 #GET_DIRECTORY_PROPERTY(CG_ODB_INCLUDE_DIRS INCLUDE_DIRECTORIES)
+message("Origin: ${CG_ORIGIN}")
 set(CG_ODB_INCLUDE_DIRS
-  /home/marius/cg/src
-    /home/marius/cg/src/include
-      /home/marius/cg/src/include/websock
-      "${CMAKE_CURRENT_BINARY_DIR}")
+#  /home/marius/cg/src
+#    /home/marius/cg/src/include
+#      /home/marius/cg/src/include/websock
+  "${CG_ORIGIN}/src"
+    "${CG_ORIGIN}/src/include"
+	  "${CG_ORIGIN}/src/include/websock"
+	  "${SERVERAPP_SRC_DIR}"
+      "${CMAKE_CURRENT_BINARY_DIR}"
+	  "${SERVERAPP_SRC_DIR}")
+
 
 set(ODB_COMPILE_DEBUG TRUE)
 odb_compile(CG_SRC_FILES INCLUDE ${CG_ODB_INCLUDE_DIRS} FILES ${CG_ODB_HEADERS} DB mysql GENERATE_QUERY GENERATE_SESSION GENERATE_SCHEMA SCHEMA_FORMAT embedded STANDARD c++11)

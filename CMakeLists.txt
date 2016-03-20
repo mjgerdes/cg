@@ -1,6 +1,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (CG C CXX)
 
+
+set(SERVERAPP_SRC_DIR "${PROJECT_SOURCE_DIR}/serverapp/src")
+set(SERVERAPP_PROTO_DIR "${PROJECT_SOURCE_DIR}/serverapp/proto")
+set(CG_ORIGIN "${PROJECT_SOURCE_DIR}")
+
+
 # To compile with thread sanitizer, we need precompiled boost libraries (especially boost::lockfree) that
 # have been instrumentalized with thread sanitizer (-fsanitize=thread).
 # The following variable must be set to the boost root containing instrumented libraries of boost version 1.60
