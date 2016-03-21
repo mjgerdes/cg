@@ -23,9 +23,9 @@ if("${FSAN}" STREQUAL "thread")
   set(Boost_NO_SYSTEM_PATHS ON)
   set(BOOST_ROOT "${BOOST160_TSAN_ROOT}")
   set(BOOST_LIBRARY_DIR "${BOOST160_TSAN_ROOT}/lib")
-  find_package(Boost 1.60.0 COMPONENTS system regex coroutine context thread REQUIRED)
+  find_package(Boost 1.60.0 COMPONENTS system regex coroutine context thread filesystem REQUIRED)
 else()
-  find_package(Boost 1.54.0 COMPONENTS system regex coroutine context thread REQUIRED)
+  find_package(Boost 1.54.0 COMPONENTS system regex coroutine context thread filesystem REQUIRED)
 endif()
 
 include_directories(${Boost_INCLUDE_DIR})
@@ -94,7 +94,7 @@ set(CG_ODB_INCLUDE_DIRS
 set(ODB_COMPILE_DEBUG TRUE)
 odb_compile(CG_SRC_FILES INCLUDE ${CG_ODB_INCLUDE_DIRS} FILES ${CG_ODB_HEADERS} DB mysql GENERATE_QUERY GENERATE_SESSION GENERATE_SCHEMA SCHEMA_FORMAT embedded STANDARD c++11)
 
-
+message("Files: ${CG_SRC_FILES}")
 add_executable(cgserver 
 ${CG_SRC_FILES} 
 ${PROTO_SRCS} 
