@@ -13,5 +13,10 @@ app.config(function ($routeProvider) {
                 controller: 'IndexController',
                 templateUrl: 'app/partials/indexPage.html'
             })
+        .when('/collection',
+            {
+                controller: 'CollectionController',
+                templateUrl: 'app/partials/collection.html'
+            })
         .otherwise({ redirectTo: '/login' });
 });

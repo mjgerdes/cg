@@ -1,23 +1,21 @@
-<div class="container">
+
 <div class="row">
-<div class="col-xs-4 col-xs-offset-4">
+<div class="col-md-2 col-md-offset-5">
 <form> 
-<h2>Please log in or register an account</h2>
+<h2 class="h2">Please log in or register an account</h2>
         <label for="loginEmail">Email</label>
         <input class="form-control" type="email"data-ng-model="email" placeholder="yourname@email.com" required>
         <label for="loginPassword">Password</label>
         <input class="form-control" type="password" data-ng-model="password" placeholder="password" required>
-<button class="btn btn-lg btn-primary btn-block" data-ng-click="login()">Login</button>
-<button class="btn btn-lg btn-primary btn-block" data-ng-click="register()">Register</button>
+<div>
+<button class="btn btn-small btn-primary" data-ng-click="login()">Login</button>
+<button class="btn btn-small btn-primary" data-ng-click="register()">Register</button>
+</div>
 </form>
-</div>
-<div class="col-xs-4"></div>
-</div><div class="row">
-<div class="col-xs-4 col-xs-offset-4">
 <div class="alert" data-ng-show="msgp">
-<p data-ng-bind="msg"></p>
+<p class="text-center text-warning" data-ng-bind="msg"></p>
 </div>
 </div>
-<div class="col-xs-4"></div>
-</div>
-</div>
+
+
+
