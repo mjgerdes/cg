@@ -8,6 +8,6 @@
 #include "Card.hpp"
 #include "ProtobufMessageLoader.hpp"
 
-using CardProvider = ConstantDataProvider<data::CardData, Card, ProtobufMessageLoader<data::CardData>>;
+using CardProvider = ConstantDataProvider<data::CardData, Card, ProtobufMessageLoader<data::CardData>, Card::CardVerifier>;
 
 #endif

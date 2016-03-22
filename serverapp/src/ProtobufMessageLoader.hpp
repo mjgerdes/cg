@@ -13,16 +13,20 @@
 
 template <typename msg_T>
 struct ProtobufMessageLoader {
-	void operator()(const std::string& dataPath,
+	void operator()(const std::string dataPath,
 					std::function<bool(msg_T&)> push) {
 		using namespace boost::filesystem;
 		using namespace google::protobuf;
 		using namespace google::protobuf::io;
-
+std::cout << "Loading files in " << dataPath << std::endl;
 		path p = dataPath.c_str();
-if(!is_directory(p)) {
-std::cerr << "Warning in ProtobufMessageLoader: " << p << " is not a directory; no files were loaded!" << std::endl;
-}
+
+// for some reason this crashes - boost.filesystem seems to be a bit wonky
+//if (!boost::filesystem::is_directory(p)) {
+//			std::cerr << "Warning in ProtobufMessageLoader: " << dataPath
+//					  << " is not a directory; no files were loaded!"
+//					  << std::endl;
+//		}
 
 		msg_T msg;
 		ZeroCopyInputStream* is;

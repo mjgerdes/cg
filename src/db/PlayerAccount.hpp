@@ -14,6 +14,9 @@ public:
 
 	PlayerAccount(const std::string& email, const std::string& password) : m_email(email), m_password(password), m_name("") {}
 
+	inline id_type id() {
+		return m_id;
+	}
 
 private:
 	friend class odb::access;
