@@ -7,5 +7,13 @@ body {
 
 .index-box {
 background-color: #303030;
-border:3px dashd gold;
+border:3px solid gold;
+padding:8px;
+
+	}
+
+.danger-box {
+background-color: #303030;
+border:3px dashed red;
+padding:8px;
 	}
