@@ -2,16 +2,22 @@ syntax="proto3";
 
 package data;
 
+message CardSet {
+  enum CardSetId { universal = 0; general = 1; };
+  CardSetId id = 1;
+  }
+
+
 message CardData {
 enum CardId {
   universal = 0;
   basic_missile = 1;
   };
-  enum SMSType { science = 0; military = 1; support = 2;};
-  enum SetType { general = 0; };
+
+  enum SMSType { none = 0; science = 1; military = 2; support = 3;};
   CardId id = 1;
    string name = 2;
- SetType set = 20;
+ CardSet.CardSetId set = 20;
  SMSType type = 3;
  uint32 system_id = 4;
  uint32 science_cost = 5;
