@@ -49,6 +49,18 @@ AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
 	return unauthed;
 }  // end connectionStatusOf
 
+void AuthModule::setNewPlayerCallback(NewPlayerCallback_type f) {
+	m_newPlayerCallback = f;
+}
+
+optional<AuthModule::PlayerId_type> AuthModule::getIdFor(WSConnection connection) {
+	const auto i = m_connections.find(&(*connection));
+	if(i == m_connections.cend()) {
+		return optional<PlayerId_type>{};
+	}
+	return make_optional<PlayerId_type>(i->second->id());
+}
+
 void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	logServer.log<dbg>("Hello to ", msg->email());
 	if (connectionStatusOf(source) == authed) {
@@ -114,8 +126,11 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 	odb::transaction insertTransaction(dbServer->begin());
 	dbServer->persist(*newPlayer);
 	insertTransaction.commit();
+	// fire new player callback for further initialization
+	m_newPlayerCallback(newPlayer->id(), source);
 
 	m_connections[&(*source)] = std::move(newPlayer);
+
 	// send successful register response
 	sendRegistrationResponse(true, source);
 	logServer.log<net>("Player `", msg->email(), " successfully registered");

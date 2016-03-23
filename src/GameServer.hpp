@@ -11,11 +11,11 @@
 #include "ServerMessage.pb.h"
 
 namespace odb {
-	class database;
+class database;
 }
 
 namespace db {
-	using DBServer = ::odb::database;
+using DBServer = ::odb::database;
 }
 
 class LogServer;
@@ -26,11 +26,17 @@ public:
 		msg::MessageDispatcher<msg::ClientMessage,
 							   msg::ClientMessage::ClientMessageType,
 							   msg::pbmsg_type, WSConnection>;
-	using StandardServerMessageFactory = msg::MessageFactory<msg::ServerMessage>;
-	using StandardSendMessage = typename StandardServerMessageFactory::RecycleMessage;
-	using StandardSendFunction = std::function<void(const  StandardSendMessage&, WSConnection&)>;
-	using StandardServerMessageFactoryFunction = std::function<StandardSendMessage()>;
-	using StandardModule = Module<StandardMessageDispatcher, StandardSendFunction, StandardServerMessageFactoryFunction>;
+	using StandardServerMessageFactory =
+		msg::MessageFactory<msg::ServerMessage>;
+	using StandardSendMessage =
+		typename StandardServerMessageFactory::RecycleMessage;
+	using StandardSendFunction =
+		std::function<void(const StandardSendMessage&, WSConnection&)>;
+	using StandardServerMessageFactoryFunction =
+		std::function<StandardSendMessage()>;
+	using StandardModule =
+		Module<StandardMessageDispatcher, StandardSendFunction,
+			   StandardServerMessageFactoryFunction>;
 	using Database_type = db::DBServer;
 	using Database_ptr = std::unique_ptr<Database_type>;
 	using LogServer_type = LogServer;
@@ -39,7 +45,6 @@ public:
 	GameServer(WSServer& server, LogServer& logServer);
 	~GameServer();
 	GameServer(const GameServer& other) = delete;
-
 
 	void start();
 	Database_type* getDB();

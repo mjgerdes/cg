@@ -10,11 +10,11 @@ namespace db {
 #pragma db object
 class PlayerAccount {
 public:
-	using id_type = unsigned long;
+	using Id_type = unsigned long;
 
 	PlayerAccount(const std::string& email, const std::string& password) : m_email(email), m_password(password), m_name("") {}
 
-	inline id_type id() {
+	inline Id_type id() {
 		return m_id;
 	}
 
@@ -24,7 +24,7 @@ private:
 	PlayerAccount() {}
 
 #pragma db id auto
-	id_type m_id;
+	Id_type m_id;
 	std::string m_email;
 	std::string m_password;
 	std::string m_name;

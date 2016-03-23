@@ -8,7 +8,7 @@
 namespace Utility {
 
 	using std::experimental::optional;
-
+	using std::experimental::make_optional;
 		}
 
 #endif

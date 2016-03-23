@@ -23,7 +23,8 @@ public:
 	Card& operator=(const Card&) = default;
 	Card& operator=(Card&& other) = default;
 
-
+public:
+	inline data_type::CardId id() { return m_data->id(); }
 
 private:
 	const data_type* m_data;

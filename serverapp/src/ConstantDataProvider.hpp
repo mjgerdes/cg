@@ -37,18 +37,19 @@ public:
 	void operator=(const ConstantDataProvider&) = delete;
 
 	wrapper_type get(const id_type id) const {
-		return wrapper_type(&(m_data.at(id)));
+		return std::move(wrapper_type(&(m_data.at(id))));
 	}
 
 private:
 	void verify() {
-	for(int i = 0; i < m_data.size(); ++i) {
-		if(i != m_data[i].id()) {
-			std::stringstream msg;
-			msg << "error in ConstantDataProvider: id " << m_data[i].id() << "does not match index " << i << std::endl;
-			throw std::runtime_error(msg.str());
-		}
-	} // for
+		for (int i = 0; i < m_data.size(); ++i) {
+			if (i != m_data[i].id()) {
+				std::stringstream msg;
+				msg << "error in ConstantDataProvider: id " << m_data[i].id()
+					<< "does not match index " << i << std::endl;
+				throw std::runtime_error(msg.str());
+			}
+		}  // for
 	}
 
 	void init() {
@@ -58,7 +59,10 @@ private:
 			return result;
 		});
 
-		std::sort(m_data.begin(), m_data.end(), [](const auto& lhs, const auto& rhs) { return lhs.id() < rhs.id();});
+		std::sort(m_data.begin(), m_data.end(),
+				  [](const auto& lhs, const auto& rhs) {
+					  return lhs.id() < rhs.id();
+				  });
 		verify();
 	}
 
