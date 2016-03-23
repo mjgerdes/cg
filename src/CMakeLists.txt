@@ -63,20 +63,23 @@ file(GLOB CG_SRC_FILES
   "include/*.hpp"
   "${SERVERAPP_SRC_DIR}/*.cpp"
   "${SERVERAPP_SRC_DIR}/*.hpp"
-  "${SERVERAPP_SRC_DIR}/Module/*.cpp")
+  "${SERVERAPP_SRC_DIR}/Module/*.cpp"
+  "${SERVERAPP_SRC_DIR}/db/*.cpp")
 
 # ODB
 find_package(ODB REQUIRED COMPONENTS mysql)
 include(${ODB_USE_FILE})
 
 #set(CG_ODB_HEADERS
-#"db/PlayerAccount.hpp")
+#"db/PlayerAccount.hpp"
+#"${SERVERAPP_SRC_DIR}/db/Player.hpp")
 
 file(GLOB CG_ODB_HEADERS
-  "db/*.hpp")
+  "db/*.hpp"
+  "${SERVERAPP_SRC_DIR}/db/*.hpp")
 
 include_directories(db)
-
+include_directories("${SERVERAPP_SRC_DIR}/db")
 #GET_DIRECTORY_PROPERTY(CG_ODB_INCLUDE_DIRS INCLUDE_DIRECTORIES)
 message("Origin: ${CG_ORIGIN}")
 set(CG_ODB_INCLUDE_DIRS
@@ -84,17 +87,22 @@ set(CG_ODB_INCLUDE_DIRS
 #    /home/marius/cg/src/include
 #      /home/marius/cg/src/include/websock
   "${CG_ORIGIN}/src"
+  "${CG_ORIGIN}/src/db"
     "${CG_ORIGIN}/src/include"
 	  "${CG_ORIGIN}/src/include/websock"
 	  "${SERVERAPP_SRC_DIR}"
       "${CMAKE_CURRENT_BINARY_DIR}"
+	        "${CMAKE_CURRENT_BINARY_DIR}/src/odb_gen"
 	  "${SERVERAPP_SRC_DIR}")
 
-
+include_directories(	        "${CMAKE_CURRENT_BINARY_DIR}/src/odb_gen")
+include_directories(	        "${CMAKE_CURRENT_BINARY_DIR}/odb_gen")
 set(ODB_COMPILE_DEBUG TRUE)
 odb_compile(CG_SRC_FILES INCLUDE ${CG_ODB_INCLUDE_DIRS} FILES ${CG_ODB_HEADERS} DB mysql GENERATE_QUERY GENERATE_SESSION GENERATE_SCHEMA SCHEMA_FORMAT embedded STANDARD c++11)
 
 message("Files: ${CG_SRC_FILES}")
+message("ODB HEADERS: ${CG_ODB_HEADERS}")
+message("ODB INCLUDE DIRS: ${CG_ODB_INCLUDE_DIRS}")
 add_executable(cgserver 
 ${CG_SRC_FILES} 
 ${PROTO_SRCS} 

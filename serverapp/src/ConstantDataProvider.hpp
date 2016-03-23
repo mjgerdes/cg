@@ -40,6 +40,13 @@ public:
 		return std::move(wrapper_type(&(m_data.at(id))));
 	}
 
+	auto cbegin() {
+		return m_data.cbegin();
+	}
+
+	auto cend() {
+		return cend();
+	}
 private:
 	void verify() {
 		for (int i = 0; i < m_data.size(); ++i) {

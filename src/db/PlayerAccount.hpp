@@ -11,7 +11,7 @@ namespace db {
 class PlayerAccount {
 public:
 	using Id_type = unsigned long;
-
+//	using Id_type = int;
 	PlayerAccount(const std::string& email, const std::string& password) : m_email(email), m_password(password), m_name("") {}
 
 	inline Id_type id() {
