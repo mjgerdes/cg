@@ -23,7 +23,7 @@ public:
 	using verifier_type = verifier_T;
 	using container_type = std::vector<data_type>;
 
-	using id_type = typename wrapper_type::id_type;
+	using Id_type = typename wrapper_type::Id_type;
 
 public:
 	ConstantDataProvider(const std::string& dataPath)
@@ -36,17 +36,14 @@ public:
 	ConstantDataProvider(ConstantDataProvider&&) = delete;
 	void operator=(const ConstantDataProvider&) = delete;
 
-	wrapper_type get(const id_type id) const {
+	wrapper_type get(const Id_type id) const {
 		return std::move(wrapper_type(&(m_data.at(id))));
 	}
 
-	auto cbegin() {
-		return m_data.cbegin();
-	}
+	auto cbegin() const { return m_data.cbegin(); }
+	auto cend() const { return cend(); }
+	auto size() const { return m_data.size(); }
 
-	auto cend() {
-		return cend();
-	}
 private:
 	void verify() {
 		for (int i = 0; i < m_data.size(); ++i) {

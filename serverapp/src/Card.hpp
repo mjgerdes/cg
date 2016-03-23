@@ -7,7 +7,7 @@
 
 class Card {
 public:
-	using id_type = unsigned int;
+	using Id_type = unsigned int;
 	using data_type = data::CardData;
 
 	struct CardVerifier {
