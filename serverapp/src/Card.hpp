@@ -7,8 +7,8 @@
 
 class Card {
 public:
-	using Id_type = unsigned int;
 	using data_type = data::CardData;
+	using Id_type = typename data_type::CardId;
 
 	struct CardVerifier {
 		bool operator()(const data_type*);

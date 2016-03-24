@@ -15,8 +15,8 @@ struct NewPlayerInitializer {
 	NewPlayerInitializer(GameServer::Database_type* db, CardProvider* cp)
 		: m_db(db), m_cp(cp), m_initialCardGift() {
 		m_initialCardGift.reserve(m_cp->size() - 1);
-		for (Card::Id_type i = 1; i < m_cp->size(); ++i) {
-			m_initialCardGift.push_back(i);
+		for (unsigned int i = data::CardData::basic_missile; i < m_cp->size(); ++i) {
+			m_initialCardGift.push_back(static_cast<data::CardData::CardId>(i));
 		}
 	}
 

@@ -24,6 +24,9 @@ public:
 
 	void initializeCardCollection(const CardContainer_type&);
 
+	inline const CardContainer_type& getCardCollection() const {
+		return m_cardCollection;
+	}
 
 private:
 	friend class odb::access;

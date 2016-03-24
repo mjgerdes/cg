@@ -6,5 +6,5 @@ message CardCollectionRequest {
 }
 
 message CardCollectionResponse {
-repeated data.CardData.CardId card_id = 1;
+repeated data.CardData.CardId card_ids = 1;
 }

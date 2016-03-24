@@ -7,6 +7,7 @@
 #include "Module/AuthModule.hpp"
 #include "CardProvider.hpp"
 #include "DataModuleMessages.pb.h"
+#include "db/Player.hpp"
 
 class DataModule : public GameServer::StandardModule {
 public:
@@ -18,7 +19,7 @@ public:
 private:
 	void onCardCollectionRequest(const msg::CardCollectionRequest* msg,
 								 WSConnection source);
-	void sendCardCollectionResponse(WSConnection destination);
+void sendCardCollectionResponse(const db::Player::CardContainer_type& cards, WSConnection destination);
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 private:
