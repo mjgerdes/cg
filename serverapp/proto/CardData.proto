@@ -2,6 +2,9 @@ syntax="proto3";
 
 package data;
 
+
+
+
 message CardSet {
   enum CardSetId { universal = 0; general = 1; };
   CardSetId id = 1;
@@ -27,4 +30,8 @@ enum CardId {
  int32 health = 9;
  string description = 10;
  string fluff = 11;
+}
+
+message CardDataWrapper {
+repeated CardData cards = 1;
 }

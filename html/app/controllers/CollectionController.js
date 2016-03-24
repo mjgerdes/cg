@@ -1,5 +1,5 @@
 
-app.controller('CollectionController', function ($scope, $location, WebSockService) {
+app.controller('CollectionController', function ($scope, $location, WebSockService, CardDataService) {
 
 	});
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec sed "s/.*\///g" | sed "s/note:/\nnote:/g" | sed "s/error:/\nerror:/g" | sed 's/\/home\/marius\/cg\/src\///g'
+exec cat| sed "s/^[In\ file\ included\ from\ ]*\S*\///g" | sed "s/note:/\nnote:/g" | sed "s/error:/\nerror:/g" #| sed 's/\/home\/marius\/cg\/src\///g'
