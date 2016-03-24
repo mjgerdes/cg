@@ -1,12 +1,15 @@
-
+syntax="proto2";
 package msg;
 
 import "LoginResponse.proto";
 import "RegistrationResponse.proto";
+import "DataModuleMessages.proto";
 
 message ServerMessage {
-  enum ServerMessageType { LoginResponseType = 1; RegistrationResponseType = 2;};
+  enum ServerMessageType { LoginResponseType = 1; RegistrationResponseType = 2;
+  CardCollectionResponseType = 3;};
   required ServerMessageType msgType = 1;
   optional LoginResponse loginresponse = 2;
   optional RegistrationResponse registrationresponse = 3;
+  optional CardCollectionResponse card_collection_response = 4;
 }

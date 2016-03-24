@@ -8,8 +8,7 @@
 #include "GameServer.hpp"
 #include "LogServer.hpp"
 #include "Module/AuthModule.hpp"
-#include "CardData.pb.h"
-#include "CardProvider.hpp"
+#include "Module/DataModule.hpp"
 #include "NewPlayerInitializer.hpp"
 
 using namespace std;
@@ -23,12 +22,13 @@ int main(int argc, char** argv) {
 	auto logServer = LogServer{true};
 	logServer.log<Log::net>("Logging started");
 
-	CardProvider cp{"/home/marius/cg/serverapp/data/cards"};
-
 	auto gameServer = std::make_unique<GameServer>(server, logServer);
 	auto authModule = std::make_unique<AuthModule>(gameServer->getDB(), gameServer->getLogServer());
-	authModule->setNewPlayerCallback(NewPlayerInitializer{gameServer->getDB(), &cp});
+
+	auto dataModule = std::make_unique<DataModule>(&(*authModule), gameServer->getDB(), "/home/marius/cg/serverapp/data/cards");
+	authModule->setNewPlayerCallback(NewPlayerInitializer{gameServer->getDB(), dataModule->getCardProvider()});
 	gameServer->loadModule(std::move(authModule));
+	gameServer->loadModule(std::move(dataModule));
 //	gameServer->emplaceModule<AuthModule>(gameServer->getDB(), gameServer->getLogServer());
 
 

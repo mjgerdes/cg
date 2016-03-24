@@ -35,15 +35,19 @@ struct ProtobufMessageLoader {
 		msg_T msg;
 		ZeroCopyInputStream* is;
 		for (directory_entry& file : directory_iterator(p)) {
+			if(file.path().extension() != ".pb") {
+				std::cerr << "    Ignoring " << file.path().filename() << std::endl;
+			continue;
+			}
 			int fd = open(file.path().string().c_str(), O_RDONLY);
 			is = new FileInputStream(fd);
 			if (TextFormat::Parse(is, &msg)) {
 				if (!push(msg)) {
-					std::cerr << "Warning in ProtobufMessageLoader: Verify "
+					std::cerr << "    Warning in ProtobufMessageLoader: Verify "
 								 "failed on file " << file.path() << std::endl;
 				}
 			} else {
-				std::cerr << "Warning in ProtobufMessageLoader: Could not parse"
+				std::cerr << "    Warning in ProtobufMessageLoader: Could not parse"
 						  << file.path() << std::endl;
 			}
 			if (callback) {

@@ -43,11 +43,11 @@ find_package(Threads REQUIRED)
 find_package(Protobuf REQUIRED)
  include_directories(${PROTOBUF_INCLUDE_DIRS})
  include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
+set(PROTOBUF_IMPORT_DIRS "${SERVERAPP_PROTO_DIR}")
 file(GLOB PROTOFILES
   "proto/*.proto"
   "${SERVERAPP_PROTO_DIR}/*.proto")
-
+message("PROTO_HDRS: ${PROTO_HDRS}")
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS "${PROTOFILES}")
 
 include_directories(.)

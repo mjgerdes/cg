@@ -1,0 +1,10 @@
+syntax="proto2";
+package msg;
+import "CardData.proto";
+
+message CardCollectionRequest {
+}
+
+message CardCollectionResponse {
+repeated data.CardData.CardId card_id = 1;
+}
