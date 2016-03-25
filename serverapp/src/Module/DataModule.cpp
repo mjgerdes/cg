@@ -28,7 +28,7 @@ void DataModule::onCardCollectionRequest(const msg::CardCollectionRequest* msg,
 			std::unique_ptr<db::Player>{m_db->load<db::Player>(*maybeId)};
 		sendCardCollectionResponse(player->getCardCollection(),
 								   std::move(source));
-		t.commit();
+//		t.commit();
 	}
 }  // end onCardCollectionRequest
 

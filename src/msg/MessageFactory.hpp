@@ -59,7 +59,10 @@ public:
 	private:
 		RecycleMessage(owner_type* owner, const index_type index,
 					   std::mutex* mutex, message_type& msg)
-			: m_owner(owner), m_index(index), m_mutex(mutex), m_msg(msg) {}
+			: m_owner(owner), m_index(index), m_mutex(mutex), m_msg(msg) {
+			// new
+			m_msg.Clear();
+		}
 
 	private:
 		owner_type* m_owner;
