@@ -1,4 +1,6 @@
-var app = angular.module('CGApp', ['ngRoute']);
+
+var globalEmail;
+var app = angular.module('CGApp', ['ngRoute', 'ngCookies']);
 
 //This configures the routes and associates each route with a view and a controller
 app.config(function ($routeProvider) {

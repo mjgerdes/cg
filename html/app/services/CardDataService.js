@@ -23,11 +23,9 @@ $http({
 	processResponse : false})
 	.success(function (data) {
 var msg = Data.CardDataWrapper.decode(data);
-		alert(msg);
 for(var i = 0; i < msg.cards.length; i++) {
 	cards[msg.cards[i].id] = msg.cards[i];
 	}
-		alert(cards[1]);
 ready = true;
 		});
 

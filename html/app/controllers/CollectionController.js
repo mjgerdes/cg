@@ -1,6 +1,6 @@
 
-app.controller('CollectionController', ['$scope', '$location', 'WebSockService', 'CardDataService',
-function ($scope, $location, WebSockService, CardDataService) {
+app.controller('CollectionController', ['$scope', '$location', 'WebSockService', 'CardDataService', '$cookies',
+function ($scope, $location, WebSockService, CardDataService, $cookies) {
 //alert(CardDataService.get);
 //$scope.test = CardDataService.get(CardDataService.types.basic_missile).description;
 $scope.card_ids = [];
@@ -18,5 +18,18 @@ var cardCollectionRequestMsg = new ClientMessage({
 	"msgType" : "CardCollectionRequestType"});
 	WebSockService.sendMsg(cardCollectionRequestMsg);
 //	alert(CardDataService.get);
+
+
+
+WebSockService.registerHandler(ServerMessageTypes.LoginResponseType, function(msg) {
+	WebSockService.sendMsg(cardCollectionRequestMsg);
+	});
+if($cookies.get("email")) {
+var msg = new ClientMessage({
+	"msgType" : "LoginTokenType",
+"login_token" :{"email":$cookies.get("email"), "token" : $cookies.get("token")}});
+	globalEmail = $cookies.get("email");
+	WebSockService.sendMsg(msg);
+	}
 	}]);
 

@@ -23,6 +23,9 @@ void AuthModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 						  &AuthModule::onDisconnect);
 	reg.entry<Connect>(ClientMessage::ConnectType, &ClientMessage::connect,
 					   &AuthModule::onConnect);
+	reg.entry<LoginToken>(msg::ClientMessage::LoginTokenType,
+						  &ClientMessage::login_token,
+						  &AuthModule::onLoginToken);
 }
 
 void AuthModule::sendLoginResponse(bool wasSuccessful,
@@ -53,9 +56,10 @@ void AuthModule::setNewPlayerCallback(NewPlayerCallback_type f) {
 	m_newPlayerCallback = f;
 }
 
-optional<AuthModule::PlayerId_type> AuthModule::getIdFor(WSConnection connection) {
+optional<AuthModule::PlayerId_type> AuthModule::getIdFor(
+	WSConnection connection) {
 	const auto i = m_connections.find(&(*connection));
-	if(i == m_connections.cend()) {
+	if (i == m_connections.cend()) {
 		return optional<PlayerId_type>{};
 	}
 	return make_optional<PlayerId_type>(i->second->id());
@@ -66,6 +70,8 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	if (connectionStatusOf(source) == authed) {
 		logServer.log<net>("Player `", msg->email(), "` is already connected: ",
 						   connectionString(source));
+		// FIXME: this might not make sense, what if someone is logged in and
+		// they log in with different account details
 		sendLoginResponse(true, source);
 		return;
 	}
@@ -84,9 +90,9 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 		return;
 	}
 
-	m_connections[&(*source)] = std::move(player);
-
-	sendLoginResponse(true, source);
+	//	m_connections[&(*source)] = std::move(player);
+	//	sendLoginResponse(true, source);
+	giveAuth(std::move(source), std::move(player));
 }  // end onLogin
 
 void AuthModule::onRegistration(const msg::Registration* msg,
@@ -129,10 +135,11 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 	// fire new player callback for further initialization
 	m_newPlayerCallback(newPlayer->id(), source);
 
-	m_connections[&(*source)] = std::move(newPlayer);
-
+//	m_connections[&(*source)] = std::move(newPlayer);
+	giveAuth(source, std::move(newPlayer));
 	// send successful register response
-	sendRegistrationResponse(true, source);
+	// (might not need this)
+//	sendRegistrationResponse(true, source);
 	logServer.log<net>("Player `", msg->email(), " successfully registered");
 }  // end onRegistration
 
@@ -147,3 +154,63 @@ void AuthModule::onDisconnect(const msg::Disconnect* msg,
 
 void AuthModule::onConnect(const msg::Connect* msg,
 						   WSConnection newConnection) {}  // end onConnect
+
+void AuthModule::onLoginToken(const msg::LoginToken* msg, WSConnection source) {
+	logServer.log<net>("Recieved login token ", msg->token(), " for user ",
+					   msg->email(), " from connection ",
+					   connectionString(source));
+
+	const auto idForToken = m_tokens.find(msg->token());
+	if (idForToken == m_tokens.cend()) {
+		logServer.log<net>("Invalid or expired login token for user ",
+						   msg->email(), " from connection ",
+						   connectionString(source));
+		// send invalid token response...
+		return;
+	}
+
+	{
+		odb::transaction t{dbServer->begin()};
+		auto account = PlayerAccount_ptr{
+			dbServer->load<db::PlayerAccount>(idForToken->second)};
+		// sanity check - this really cannot happen
+		if (!account) {
+			logServer.log<dbg>(
+				"Error in AuthModule::onLoginToken: invalid id produced a "
+				"nullptr");
+			return;
+		}
+
+		// possible attack
+		if (account->email() != msg->email()) {
+			logServer.log<net>(
+				"Email/id mismatch for token from user ", msg->email(),
+				", tried to authenticate for token for user ", account->email(),
+				"; connection ", connectionString(source));
+			// send invalid token response
+			return;
+		}
+
+		giveAuth(std::move(source), std::move(account));
+	}
+}
+
+void AuthModule::sendLoginTokenIssue(token_type token,
+									 WSConnection destination) {
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::LoginTokenIssueType);
+	msg->mutable_login_token_issue()->set_token(token);
+	sendMessage(msg, destination);
+}
+
+AuthModule::token_type AuthModule::registerTokenFor(PlayerId_type id) {
+	m_lastToken += 1;
+	m_tokens[m_lastToken] = id;
+	return m_lastToken;
+}
+
+void AuthModule::giveAuth(WSConnection connection, PlayerAccount_ptr account) {
+	sendLoginTokenIssue(registerTokenFor(account->id()), connection);
+	m_connections[&(*connection)] = std::move(account);
+	sendLoginResponse(true, connection);
+}

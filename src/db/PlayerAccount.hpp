@@ -18,6 +18,10 @@ public:
 		return m_id;
 	}
 
+	inline std::string email() {
+		return m_email;
+	}
+	
 private:
 	friend class odb::access;
 

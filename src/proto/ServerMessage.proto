@@ -7,9 +7,11 @@ import "DataModuleMessages.proto";
 
 message ServerMessage {
   enum ServerMessageType { LoginResponseType = 1; RegistrationResponseType = 2;
-  CardCollectionResponseType = 3;};
+  CardCollectionResponseType = 3;
+  LoginTokenIssueType = 4;};
   required ServerMessageType msgType = 1;
   optional LoginResponse loginresponse = 2;
   optional RegistrationResponse registrationresponse = 3;
   optional CardCollectionResponse card_collection_response = 4;
+  optional LoginTokenIssue login_token_issue = 5;
 }
