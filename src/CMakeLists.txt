@@ -140,6 +140,16 @@ if(MSYS)
 #    target_link_libraries(wss_examples ws2_32 wsock32)
 endif()
 
+add_custom_command(TARGET cgserver PRE_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/proto ${HTML_PROTO_OUT_DIR})
+
+add_custom_command(TARGET cgserver PRE_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${SERVERAPP_PROTO_DIR} ${HTML_PROTO_OUT_DIR})
+
+
+  
 
 
 

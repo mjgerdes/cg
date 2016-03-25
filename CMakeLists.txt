@@ -2,8 +2,11 @@ cmake_minimum_required (VERSION 2.8)
 project (CG C CXX)
 
 
+
 set(SERVERAPP_SRC_DIR "${PROJECT_SOURCE_DIR}/serverapp/src")
 set(SERVERAPP_PROTO_DIR "${PROJECT_SOURCE_DIR}/serverapp/proto")
+set(HTML_PROTO_OUT_DIR "${PROJECT_SOURCE_DIR}/html/proto")
+
 set(CG_ORIGIN "${PROJECT_SOURCE_DIR}")
 
 
