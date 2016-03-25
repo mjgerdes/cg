@@ -1,5 +1,5 @@
 
-app.controller('LoginController', function ($scope, $location, WebSockService) {
+app.controller('LoginController', function ($scope, $location, WebSockService, CardDataService) {
 $scope.msgp = false;
 
 	WebSockService.registerHandler(ServerMessageTypes.LoginResponseType, function(msg) {

@@ -1,3 +1,6 @@
 <div class="row">
-<p data-ng-bind="test"></p>
+<div ng-repeat="x in cards track by $index"><p>{{x.name}}</p></div>
+<br/>
+  <p data-ng-bind="card_ids"></p>
+<br/>
 </div>
