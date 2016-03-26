@@ -33,6 +33,7 @@ struct ProtobufMessageLoader {
 		//		}
 
 		msg_T msg;
+		msg.Clear();
 		ZeroCopyInputStream* is;
 		for (directory_entry& file : directory_iterator(p)) {
 			if(file.path().extension() != ".pb") {
@@ -53,6 +54,7 @@ struct ProtobufMessageLoader {
 			if (callback) {
 				callback->operator()(msg);
 			}
+			msg.Clear();
 			delete is;
 			close(fd);
 		}  // for
@@ -73,10 +75,18 @@ struct ProtobufMessageCompileLoader {
 		loader(dataPath, push, &f);
 
 		std::ofstream file;
-		file.open(dataPath + std::string("/compile.dat"));
+		file.open(dataPath + std::string("/compile.dat"), std::ios::binary | std::ios::out); 
 		wrapper.SerializeToOstream(&file);
 		file.close();
 
+// test if everything serialized correctly
+		auto testWrapper = wrapperMsg_T{};
+		auto testFile = std::ifstream{};
+		testFile.open(dataPath + std::string("/compile.dat"), std::ios::binary | std::ios::in);
+		testWrapper.ParseFromIstream(&testFile);
+		testFile.close();
+		
+		
 	}
 };  // end struct ProtobufMessageCompileLoader
 #endif

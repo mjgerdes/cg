@@ -1,37 +1,50 @@
-syntax="proto3";
+syntax="proto2";
 
 package data;
 
-
-
-
 message CardSet {
   enum CardSetId { universal = 0; general = 1; };
-  CardSetId id = 1;
+  optional CardSetId id = 1;
   }
+
+message CardTag {
+enum TagId {universal = 0; missile = 1;};
+}
+
+message CardCategory {
+enum CategoryId {universal = 0; space = 1; crew = 2; tech = 3;};
+}
 
 
 message CardData {
 enum CardId {
   universal = 0;
   basic_missile = 1;
+  basic_janitor = 2;
+  basic_laser_flurry = 3;
+  basic_olga = 4;
   };
 
   enum SMSType { none = 0; science = 1; military = 2; support = 3;};
-  CardId id = 1;
-   string name = 2;
- CardSet.CardSetId set = 20;
- SMSType type = 3;
- uint32 system_id = 4;
- uint32 science_cost = 5;
- uint32 military_cost = 6;
- uint32 support_cost = 7;
- int32 attack = 8;
- int32 health = 9;
- string description = 10;
- string fluff = 11;
+ optional   CardId id = 1;
+ optional    string name = 2;
+ optional  SMSType type = 3;
+ optional uint32 system_id = 4;
+ optional uint32 science_cost = 5;
+ optional  uint32 military_cost = 6;
+ optional uint32 support_cost = 7;
+ repeated CardTag.TagId tags = 8;
+ optional CardCategory.CategoryId category = 9;
+ optional string description = 10;
+ optional string fluff = 11;
+ optional CardSet.CardSetId set = 12;
+ optional int32 attack = 13;
+ optional int32 health = 14;
+ optional uint32 science_provide = 15;
+ optional uint32 military_provide = 16;
+ optional uint32 support_provide = 17;
 }
 
 message CardDataWrapper {
-repeated CardData cards = 1;
+repeated CardData cards = 1; 
 }
