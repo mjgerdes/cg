@@ -20,7 +20,7 @@ var handlers = {
 }};
 
 
-var ws = new WebSocket("ws://localhost:8080/index");
+var ws = new WebSocket("ws://golm.local:8080/index");
 	ws.onopen = function (evt) {
 		ready = true;
 		}

@@ -37,7 +37,7 @@ struct ProtobufMessageLoader {
 		ZeroCopyInputStream* is;
 		for (directory_entry& file : directory_iterator(p)) {
 			if(file.path().extension() != ".pb") {
-				std::cerr << "    Ignoring " << file.path().filename() << std::endl;
+//				std::cerr << "    Ignoring " << file.path().filename() << std::endl;
 			continue;
 			}
 			int fd = open(file.path().string().c_str(), O_RDONLY);
@@ -47,6 +47,7 @@ struct ProtobufMessageLoader {
 					std::cerr << "    Warning in ProtobufMessageLoader: Verify "
 								 "failed on file " << file.path() << std::endl;
 				}
+				std::cout << "Loaded " << msg.name() << " id " << msg.id() << std::endl;
 			} else {
 				std::cerr << "    Warning in ProtobufMessageLoader: Could not parse"
 						  << file.path() << std::endl;
@@ -85,8 +86,6 @@ struct ProtobufMessageCompileLoader {
 		testFile.open(dataPath + std::string("/compile.dat"), std::ios::binary | std::ios::in);
 		testWrapper.ParseFromIstream(&testFile);
 		testFile.close();
-		
-		
 	}
 };  // end struct ProtobufMessageCompileLoader
 #endif

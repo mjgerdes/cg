@@ -17,3 +17,105 @@ background-color: #303030;
 border:3px dashed red;
 padding:8px;
 	}
+
+.cg-card {
+background-color: #202020;
+border:3px solid gold;
+padding:4px;
+margin: 5px;
+float: left;
+position: relative;
+width: 150px;
+height: 225px;
+	}
+
+.card-border-fix {
+	position: absolute;
+	width: 95%;
+	top: 0%;
+	bottom: 0%;
+	}
+
+.card-name {
+  position: absolute;
+  top: 0%;
+  bottom: 90%
+  width: 100%;
+  color: #D0D0D0;
+  clear: both;
+	}
+
+.card-cost-text {
+	font-size: 70%;	 }
+
+.card-cost {
+  position: absolute;
+  top:10%;
+  bottom: 80%;
+  text-align: right;
+  clear: both;
+  width: 100%;
+}
+
+.card-stats {
+	position: absolute;
+	width: 100%;
+	top: 20%;
+	bottom: 70%;
+	padding:2px;
+	}
+
+.card-stat-span {
+	padding: 2px;
+	border:2px solid #202020;
+	}
+
+.card-description {
+	position: absolute;
+	width: 100%;
+	top: 30%;
+	bottom: 20%;
+	background-color: #202020;
+	}
+
+.card-tags {
+	position: absolute;
+	width: 100%;
+	top: 80%;
+	bottom: 0%;
+	}
+
+.card-tag-span {
+float: left;
+margin: 3px;
+color: #5050F0;
+	}
+
+.card-science {
+	border-color: #0000AA;
+	background-color: #000020;
+}
+
+.card-military {
+	border-color: #A00000;
+	background-color: #200000;
+	}
+
+.support-card {
+	border-color: #00A000;
+	background-color: #002000;
+	}
+
+.science-icon {
+	color: blue;
+	}
+
+.military-icon {
+	color: red;
+	}
+
+. support-icon {
+color: green;
+	}
+
+

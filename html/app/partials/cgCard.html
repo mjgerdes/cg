@@ -1,0 +1,19 @@
+<div class="cg-card {{cardType}}">
+<div class ="card-border-fix">
+  <h4 class="card-name strong">{{card.name}}</h3>
+<div class="small card-cost card-cost-text">{{smsScience}}<cg-sms ng-show="smsScience" type='science'></cg-sms> 
+{{smsMilitary}}<cg-sms ng-show="smsMilitary" type='military'></cg-sms> 
+{{smsSupport}}<cg-sms ng-show="smsSupport" type='support'></cg-sms>
+  </div>
+<div class="small card-stats" ng-show="showStats">
+  <span class="card-stat-span card-stat-attack">Attack: {{attack}}</span>
+  <span class="card-stat-span card-stat-health">Health: {{health}}</span>
+</div>
+<div class="small card-description" ng-show="description">
+  {{description}}
+</div>
+<div class="small card-tags" ng-show="showTags">
+  <span class="card-tag-span" ng-repeat="tag in tags track by $tagIndex">{{tag}}</span>
+</div>
+</div>
+</div>

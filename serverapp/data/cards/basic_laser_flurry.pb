@@ -8,4 +8,3 @@ support_cost: 1
 science_cost: 1
 description: "Have one of your laser systems shoot 3 times at random enemy targets."
 fluff: "Charging me lazurz..."
-tags: [missile]

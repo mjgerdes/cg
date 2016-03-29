@@ -8,7 +8,7 @@ message CardSet {
   }
 
 message CardTag {
-enum TagId {universal = 0; missile = 1;};
+enum TagId {universal = 0; missile = 1; fighter = 2; decoy = 3;};
 }
 
 message CardCategory {
@@ -23,6 +23,10 @@ enum CardId {
   basic_janitor = 2;
   basic_laser_flurry = 3;
   basic_olga = 4;
+  basic_emp = 5;
+  basic_action_stations = 6;
+  basic_mosquito = 7;
+  basic_flare = 8;
   };
 
   enum SMSType { none = 0; science = 1; military = 2; support = 3;};

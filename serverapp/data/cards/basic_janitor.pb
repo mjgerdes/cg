@@ -9,4 +9,3 @@ attack: 1
 health: 1
 description: ""
 fluff: "Ask him about the secret Space-Whisky stash."
-tags: [missile]
