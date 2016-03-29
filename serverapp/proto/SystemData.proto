@@ -1,0 +1,34 @@
+syntax="proto2";
+
+package data;
+import "CardData.proto";
+
+
+message SystemProc {
+enum ProcType {
+  universal = 0;
+  attack_laser = 1;
+  attack_missile = 2;
+  repair = 3;
+  };
+}
+
+message SystemData {
+  enum SystemId {
+  universal = 0;
+    missile_launcher = 1;
+	};
+  optional SystemId id = 1;
+  optional string name = 2;
+    optional uint32 capacity = 3;
+	optional uint32 proc = 4;
+  optional int32 health = 5;
+optional CardData.SMSType type = 6;
+optional SystemProc.ProcType proc_type = 7;
+  optional string description = 8;
+  optional string fluff = 9;
+}
+
+message SystemDataWrapper {
+repeated SystemData wrapped_msgs = 1;
+}

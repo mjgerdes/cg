@@ -50,5 +50,5 @@ enum CardId {
 }
 
 message CardDataWrapper {
-repeated CardData cards = 1; 
+repeated CardData wrapped_msgs = 1; 
 }

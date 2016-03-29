@@ -68,7 +68,7 @@ struct ProtobufMessageCompileLoader {
 					std::function<bool(msg_T&)> push) {
 		auto wrapper = wrapperMsg_T{};
 		std::function<void(msg_T&)> f = [&wrapper](msg_T& msg) {
-			auto newMsg = wrapper.add_cards();
+			auto newMsg = wrapper.add_wrapped_msgs();
 			*newMsg = msg;
 		};
 

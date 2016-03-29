@@ -2,7 +2,6 @@
 
 #include <sstream>
 
-
 #include "websock/client_ws.hpp"
 #include "typedefs.hpp"
 #include "GameServer.hpp"
@@ -13,7 +12,6 @@
 
 using namespace std;
 
-
 int main(int argc, char** argv) {
 	// WebSocket (WS)-server at port 8080 using 4 threads
 	unsigned short port = 8080;
@@ -23,20 +21,26 @@ int main(int argc, char** argv) {
 	logServer.log<Log::net>("Logging started");
 
 	auto gameServer = std::make_unique<GameServer>(server, logServer);
-	auto authModule = std::make_unique<AuthModule>(gameServer->getDB(), gameServer->getLogServer());
+	auto authModule = std::make_unique<AuthModule>(gameServer->getDB(),
+												   gameServer->getLogServer());
 
-	auto dataModule = std::make_unique<DataModule>(&(*authModule), gameServer->getDB(), "/home/marius/cg/serverapp/data/cards");
-	authModule->setNewPlayerCallback(NewPlayerInitializer{gameServer->getDB(), dataModule->getCardProvider()});
+	auto dataModule =
+		std::make_unique<DataModule>(&(*authModule), gameServer->getDB(),
+									 "/home/marius/cg/serverapp/data/cards",
+									 "/home/marius/cg/serverapp/data/systems");
+	authModule->setNewPlayerCallback(NewPlayerInitializer{
+		gameServer->getDB(), dataModule->getCardProvider()});
 	gameServer->loadModule(std::move(authModule));
 	gameServer->loadModule(std::move(dataModule));
-//	gameServer->emplaceModule<AuthModule>(gameServer->getDB(), gameServer->getLogServer());
-
+	//	gameServer->emplaceModule<AuthModule>(gameServer->getDB(),
+	// gameServer->getLogServer());
 
 	thread log_thread([&logServer]() { logServer.start(); });
 
 	thread server_thread([&server, &logServer, port, threads]() {
 		// Start WS-server
-		logServer.log<Log::net>("WebSock server listening on port ", port, "with ", threads, "threads");
+		logServer.log<Log::net>("WebSock server listening on port ", port,
+								"with ", threads, "threads");
 		server.start();
 	});
 
@@ -46,4 +50,3 @@ int main(int argc, char** argv) {
 	log_thread.join();
 	return 0;
 }
-

@@ -4,8 +4,9 @@
 #include "Player_odb.h"
 
 DataModule::DataModule(AuthModule* auth, GameServer::Database_type* db,
-					   const std::string& cardPath)
-	: m_db(db), m_auth(auth), m_cp(cardPath) {}
+					   const std::string& cardPath,
+					   const std::string systemPath)
+	: m_db(db), m_auth(auth), m_cp(cardPath), m_sp(systemPath) {}
 
 void DataModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	using namespace msg;
