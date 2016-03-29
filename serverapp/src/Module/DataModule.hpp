@@ -13,8 +13,7 @@
 class DataModule : public GameServer::StandardModule {
 public:
 	DataModule(AuthModule* auth, GameServer::Database_type* db,
-			   const std::string& cardPath,
-			   const std::string systemPath);
+			   const std::string& cardPath, const std::string systemPath);
 
 	inline CardProvider* getCardProvider() { return &m_cp; };
 	inline SystemProvider* getSystemProvider() { return &m_sp; }
@@ -22,7 +21,12 @@ public:
 private:
 	void onCardCollectionRequest(const msg::CardCollectionRequest* msg,
 								 WSConnection source);
-void sendCardCollectionResponse(const db::Player::CardContainer_type& cards, WSConnection destination);
+	void onSystemCollectionRequest(const msg::SystemCollectionRequest* msg,
+								   WSConnection source);
+	void sendCardCollectionResponse(const db::Player::CardContainer_type& cards,
+									WSConnection destination);
+	void sendSystemCollectionResponse(const db::Player::SystemContainer_type& systems,
+									  WSConnection destination);
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 private:

@@ -18,4 +18,8 @@ void Player::init(odb::callback_event e, odb::database& db) {
 		m_cardCollection = initial;
 	}
 
+	void Player::initializeSystemCollection(const SystemContainer_type& systems) {
+		m_systemCollection = systems;
+	}
+
 } // end namespace

@@ -165,7 +165,7 @@ void AuthModule::onLoginToken(const msg::LoginToken* msg, WSConnection source) {
 		logServer.log<net>("Invalid or expired login token for user ",
 						   msg->email(), " from connection ",
 						   connectionString(source));
-		// send invalid token response...
+		sendInvalidTokenResponse(source);
 		return;
 	}
 
@@ -187,7 +187,7 @@ void AuthModule::onLoginToken(const msg::LoginToken* msg, WSConnection source) {
 				"Email/id mismatch for token from user ", msg->email(),
 				", tried to authenticate for token for user ", account->email(),
 				"; connection ", connectionString(source));
-			// send invalid token response
+			sendInvalidTokenResponse(source);
 			return;
 		}
 
@@ -203,6 +203,11 @@ void AuthModule::sendLoginTokenIssue(token_type token,
 	sendMessage(msg, destination);
 }
 
+void AuthModule::sendInvalidTokenResponse(WSConnection destination) {
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::LoginTokenInvalidResponseType);
+	sendMessage(msg, destination);
+}
 AuthModule::token_type AuthModule::registerTokenFor(PlayerId_type id) {
 	m_lastToken += 1;
 	m_tokens[m_lastToken] = id;

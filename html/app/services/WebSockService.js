@@ -1,7 +1,12 @@
 app.service('WebSockService', function ($rootScope, $location, $cookies, $timeout) {
 var ready = false;
+	var rememberMeDone = true;
+	if($cookies.get("email")) {
+		rememberMeDone = false;
+		}
+
 var sendMsg = function(clientMsg) {
-	if(!ready) {
+	if(!ready || !rememberMeDone) {
 		$timeout(sendMsg, 100, false, clientMsg);
 		return;
 		}
@@ -17,13 +22,26 @@ var handlers = {
 4 : function(msg) {
 	$cookies.put("email", globalEmail);
 	$cookies.put("token", msg.login_token_issue.token);
+	rememberMeDone = true;
+},
+6: function(msg) {
+$cookies.put("email", "");
+$cookies.put("token","");
+rememberMeDone = true;
 }};
 
 
 var ws = new WebSocket("ws://golm.local:8080/index");
 	ws.onopen = function (evt) {
 		ready = true;
-		}
+if($cookies.get("email")) {
+var msg = new ClientMessage({
+	"msgType" : "LoginTokenType",
+"login_token" :{"email":$cookies.get("email"), "token" : $cookies.get("token")}});
+	globalEmail = $cookies.get("email");
+	ws.send(msg.toArrayBuffer());
+	}
+		};
 
   ws.onmessage = function(evt) {
 //    try {

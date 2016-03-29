@@ -8,3 +8,6 @@ required bool success = 1;
 message LoginTokenIssue {
 required uint64 token = 1;
 }
+
+message LoginTokenInvalidResponse {
+}

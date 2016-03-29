@@ -10,7 +10,10 @@ import "DataModuleMessages.proto";
 message ClientMessage {
   enum ClientMessageType { LoginType = 2; RegistrationType = 3; DisconnectType = 4; ConnectType =5;
   CardCollectionRequestType = 6;
-  LoginTokenType = 7;};
+  LoginTokenType = 7;
+  SystemCollectionRequestType = 8;
+
+  };
   required ClientMessageType msgType = 1;
   optional Login login = 2;
   optional Registration registration = 20;
@@ -18,4 +21,5 @@ message ClientMessage {
   optional Connect connect = 5;
   optional CardCollectionRequest card_collection_request = 6;
   optional LoginToken login_token = 7;
+  optional SystemCollectionRequest system_collection_request = 8;
   }

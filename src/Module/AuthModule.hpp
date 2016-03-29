@@ -40,6 +40,7 @@ private:
 	void sendLoginResponse(bool wasSuccessful, WSConnection destination);
 	void sendRegistrationResponse(bool wasSuccessful, WSConnection destination);
 	void sendLoginTokenIssue(token_type token, WSConnection destination);
+	void sendInvalidTokenResponse(WSConnection destination);
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 	void giveAuth(WSConnection connection, PlayerAccount_ptr account);

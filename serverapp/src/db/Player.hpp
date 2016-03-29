@@ -10,7 +10,7 @@
 #include <vector>
 #include <odb/database.hxx>
 #include "Card.hpp"
-
+#include "System.hpp"
 namespace db {
 
 #pragma db object callback(init)
@@ -18,14 +18,19 @@ class Player {
 public:
 	using Id_type = typename PlayerAccount::Id_type;
 	using CardContainer_type = std::vector<Card::Id_type>;
-
+	using SystemContainer_type = std::vector<System::Id_type>;
 public:
 	Player(Id_type newId) : m_id(newId) {}
 
 	void initializeCardCollection(const CardContainer_type&);
+	void initializeSystemCollection(const SystemContainer_type&);
 
 	inline const CardContainer_type& getCardCollection() const {
 		return m_cardCollection;
+	}
+
+	inline const SystemContainer_type& getSystemCollection() {
+		return m_systemCollection;
 	}
 
 private:
@@ -41,7 +46,7 @@ private:
 	std::unique_ptr<PlayerAccount> m_account;
 
 	CardContainer_type m_cardCollection;
-
+	SystemContainer_type m_systemCollection;
 	void init(odb::callback_event e, odb::database& db); 
 
 };  // end class Player
