@@ -7,8 +7,8 @@ $scope.card_ids = [];
 $scope.cards = [];
 $scope.system_ids = [];
 	$scope.systems = []
-$scope.showCardsp = true;
-	$scope.showSystemsp = false;
+$scope.showCardsp = false;
+	$scope.showSystemsp = true;
 $scope.showCards = function () {
 	$scope.showCardsp = true;
 	$scope.showSystemsp = false;
@@ -48,8 +48,8 @@ var systemCollectionRequestMsg = new ClientMessage({
 WebSockService.sendMsg(systemCollectionRequestMsg);
 // remember me stuff
 WebSockService.registerHandler(ServerMessageTypes.LoginResponseType, function(msg) {
-	WebSockService.sendMsg(cardCollectionRequestMsg);
-WebSockService.sendMsg(systemCollectionRequestMsg);
+//	WebSockService.sendMsg(cardCollectionRequestMsg);
+//WebSockService.sendMsg(systemCollectionRequestMsg);
 	});
 /*
 if($cookies.get("email")) {

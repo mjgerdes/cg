@@ -1,0 +1,17 @@
+<div class="cg-system {{cardType}}">
+<div class="system-border-fix">
+<h4 class="system-name strong">{{name}}</h4>
+<div class="small system-capacity">
+  <span class="system-capacity-span">Card: </span>
+  <span class="system-capacity-span">{{currentCards}}/{{capacity}}</span>
+</div>
+<div class="small system-stats">
+  <span class="system-stat-proc-span" ng-show="showProc">{{procLabel}}: {{proc}}</span>
+  <span class="system-stat-health-span">Health: {{currentHealth}}/{{health}}</span> 
+</div>
+<div class="small system-description">
+<h5 class="small strong">{{ability}}</h5>
+{{description}}
+</div>
+</div>
+</div>

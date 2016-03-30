@@ -1,5 +1,15 @@
 
 
+			function cssClassForType(type) {
+				if(type == 1) {
+					return "card-science";
+					} else if(type == 2) {
+						return "card-military";
+						}
+				return "card-support";
+				}
+
+
 var stringForTag = {
 	1 : "Missile",
 	2: "Fighter",
@@ -46,15 +56,6 @@ if(cost && cost != 0) {
 		}
 	return result;
 	}
-
-			function cssClassForType(type) {
-				if(type == 1) {
-					return "card-science";
-					} else if(type == 2) {
-						return "card-military";
-						}
-				return "card-support";
-				}
 
 			function stringsForTags(tags) {
 				var res = [];

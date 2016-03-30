@@ -68,6 +68,7 @@ void DataModule::sendSystemCollectionResponse(
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::SystemCollectionResponseType);
 	for (const auto& id : systems) {
+		std::cout << id << std::endl;
 		msg->mutable_system_collection_response()->add_system_ids(id);
 	}
 	sendMessage(msg, destination);
