@@ -11,11 +11,13 @@
 #include "Player_odb.h"
 #include "CardProvider.hpp"
 #include "SystemProvider.hpp"
+#include "HullProvider.hpp"
 
 struct NewPlayerInitializer {
 	NewPlayerInitializer(GameServer::Database_type* db, CardProvider* cp,
-						 SystemProvider* sp)
-		: m_db(db), m_cp(cp), m_sp(sp), m_initialCardGift() {
+						 SystemProvider* sp,
+		HullProvider* hp)
+		: m_db(db), m_cp(cp), m_sp(sp), m_hp(hp), m_initialCardGift() {
 		m_initialCardGift.reserve(m_cp->size() - 1);
 		for (unsigned int i = data::CardData::basic_missile; i < m_cp->size();
 			 ++i) {
@@ -47,6 +49,7 @@ private:
 	GameServer::Database_type* m_db;
 	CardProvider* m_cp;
 	SystemProvider* m_sp;
+	HullProvider* m_hp;
 	db::Player::CardContainer_type m_initialCardGift;
 	db::Player::SystemContainer_type m_initialSystemGift;
 };  // end struct NewPlayerInitializer

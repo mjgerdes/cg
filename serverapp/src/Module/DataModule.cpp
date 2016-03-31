@@ -5,8 +5,12 @@
 
 DataModule::DataModule(AuthModule* auth, GameServer::Database_type* db,
 					   const std::string& cardPath,
-					   const std::string systemPath)
-	: m_db(db), m_auth(auth), m_cp(cardPath), m_sp(systemPath) {}
+					   const std::string systemPath, const std::string hullPath)
+	: m_db(db),
+	  m_auth(auth),
+	  m_cp(cardPath),
+	  m_sp(systemPath),
+	  m_hp(hullPath) {}
 
 void DataModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	using namespace msg;

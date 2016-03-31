@@ -18,7 +18,10 @@ bool System::SystemVerifier::operator()(const data_type* sys) {
 	}
 
 	// id
-	if (sys->id() == data::SystemData::universal) return true;
+	if (sys->id() == data_type::universal
+		|| sys->id() == data_type::empty_science
+		|| sys->id() == data_type::empty_military
+		|| sys->id() == data_type::empty_support) return true;
 
 	// description set
 	if (!sys->has_description() || sys->description().empty())

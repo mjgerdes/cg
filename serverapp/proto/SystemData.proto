@@ -27,6 +27,9 @@ particle_lab = 4;
 cargo_bay = 5;
 engineering_bay = 6;
 unstable_power_supply = 7;
+empty_science = 8;
+empty_military = 9;
+empty_support = 10;
 	};
   optional SystemId id = 1;
   optional string name = 2;
@@ -38,6 +41,7 @@ optional SystemProc.ProcType proc_type = 7;
   optional string description = 8;
   optional string fluff = 9;
   optional string ability = 10;
+  repeated CardTag.TagId card_tags = 11;
 }
 
 message SystemDataWrapper {

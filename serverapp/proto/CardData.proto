@@ -1,6 +1,15 @@
 syntax="proto2";
 
 package data;
+message CardRarity {
+enum Rarity {
+basic = 0;
+common = 1;
+epic = 2;
+legendary = 3;
+}
+}
+
 
 message CardSet {
   enum CardSetId { universal = 0; general = 1; };
@@ -8,7 +17,12 @@ message CardSet {
   }
 
 message CardTag {
-enum TagId {universal = 0; missile = 1; fighter = 2; decoy = 3;};
+enum TagId {universal = 0; missile = 1; fighter = 2; decoy = 3;
+  hack = 4;
+  cargo_token = 5;
+  cargo_bay = 6;
+  physics = 7;
+  };
 }
 
 message CardCategory {
@@ -27,6 +41,21 @@ enum CardId {
   basic_action_stations = 6;
   basic_mosquito = 7;
   basic_flare = 8;
+  basic_big_missile = 9;
+  basic_target_vector = 10;
+  basic_revolver_missile = 11;
+  basic_space_marine = 12;
+basic_mercenary = 23;
+basic_stackoverflow = 13;
+basic_disassemble = 14;
+basic_programmer = 15;
+basic_jolt_cola = 16;
+basic_physicist = 17;
+basic_higgs_field_modulation = 18;
+basic_irradiate = 19;
+basic_lab_assistant = 20;
+basic_red = 21;
+basic_metal_plate = 22;
   };
 
   enum SMSType { none = 0; science = 1; military = 2; support = 3;};
@@ -47,6 +76,7 @@ enum CardId {
  optional uint32 science_provide = 15;
  optional uint32 military_provide = 16;
  optional uint32 support_provide = 17;
+ optional CardRarity.Rarity rarity = 18;
 }
 
 message CardDataWrapper {

@@ -5,4 +5,4 @@ category: tech
 type: military
 military_cost: 4
 description: "Give all your military crew members and fighters +1 attack"
-
+fluff: "Wait until you see our reaction stations!"

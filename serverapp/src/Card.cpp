@@ -22,7 +22,7 @@ bool Card::CardVerifier::operator()(const data_type* data) {
 	if(data->category() == 0)
 		std::cerr << warningstring << "No category specified\n";
 
-	if (data->description().empty())
+	if (!data->has_description()) 
 		std::cerr << warningstring << "No description set\n"; 
 
 	if (data->fluff().empty())

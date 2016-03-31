@@ -27,9 +27,11 @@ int main(int argc, char** argv) {
 	auto dataModule =
 		std::make_unique<DataModule>(&(*authModule), gameServer->getDB(),
 									 "/home/marius/cg/serverapp/data/cards",
-									 "/home/marius/cg/serverapp/data/systems");
-	authModule->setNewPlayerCallback(NewPlayerInitializer{
-			gameServer->getDB(), dataModule->getCardProvider(), dataModule->getSystemProvider()});
+									 "/home/marius/cg/serverapp/data/systems",
+									 "/home/marius/cg/serverapp/data/hulls");
+	authModule->setNewPlayerCallback(
+		NewPlayerInitializer{gameServer->getDB(), dataModule->getCardProvider(),
+				dataModule->getSystemProvider(), dataModule->getHullProvider()});
 	gameServer->loadModule(std::move(authModule));
 	gameServer->loadModule(std::move(dataModule));
 	//	gameServer->emplaceModule<AuthModule>(gameServer->getDB(),

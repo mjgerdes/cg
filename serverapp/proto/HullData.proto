@@ -1,0 +1,24 @@
+syntax="proto2";
+
+package data;
+import "CardData.proto";
+import "SystemData.proto";
+
+message HullData {
+enum HullId {
+universal = 0;
+basic_wombat = 1;
+};
+
+  optional HullId id = 1;
+  optional string name = 2;
+  repeated SystemData.SystemId systems = 3;
+  repeated CardData.SMSType systems_type = 4;
+  optional string description = 6;
+  optional string fluff = 7;
+}
+
+
+message HullDataWrapper {
+  repeated HullData wrapped_msgs = 1;
+}
