@@ -30,6 +30,7 @@ unstable_power_supply = 7;
 empty_science = 8;
 empty_military = 9;
 empty_support = 10;
+hangar_bay = 11;
 	};
   optional SystemId id = 1;
   optional string name = 2;

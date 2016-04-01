@@ -1,9 +1,9 @@
 
 
-#ifndef __SYSTEMPROVIDER_HPP__
-#define __SYSTEMPROVIDER_HPP__
+#ifndef __SYSTEMPROVIDER_FWD_HPP__
+#define __SYSTEMPROVIDER_FWD_HPP__
 
-#include "ConstantDataProvider.hpp"
+#include "ConstantDataProvider.fwd.hpp"
 #include "System.hpp"
 #include "ProtobufMessageLoader.hpp"
 

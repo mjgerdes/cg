@@ -56,6 +56,10 @@ basic_irradiate = 19;
 basic_lab_assistant = 20;
 basic_red = 21;
 basic_metal_plate = 22;
+basic_signal_beacon = 27;
+basic_repair_droid = 24;
+basic_hangar_crew = 25;
+basic_well_stocked = 26;
   };
 
   enum SMSType { none = 0; science = 1; military = 2; support = 3;};

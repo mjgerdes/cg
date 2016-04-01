@@ -3,7 +3,10 @@
 #ifndef __HULL_HPP__
 #define __HULL_HPP__
 
+#include <vector>
 #include "HullData.pb.h"
+#include "System.hpp"
+
 
 class Hull {
 public:
@@ -22,8 +25,17 @@ public:
 	Hull& operator=(const Hull&) = default;
 	Hull& operator=(Hull&& other) = default;
 
+public:
+	inline Id_type id() const { return m_data->id(); }
+	inline unsigned int systemCount() const { return m_systems.size(); }
+	inline const std::vector<System>& systems() const { return m_systems; }
+	bool trySetSystemsFromSequence(const std::vector<System>&);
+	bool trySetSystem(const System& system, size_t position);
+	bool verifySystemForPos(const System&, size_t) const;
+
 private:
 	const data_type* m_data;
+	std::vector<System> m_systems;
 };  // end class Hull
 
 #endif

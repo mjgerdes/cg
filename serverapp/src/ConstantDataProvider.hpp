@@ -2,11 +2,13 @@
 
 #ifndef __CONSTANTDATAPROVIDER_HPP__
 #define __CONSTANTDATAPROVIDER_HPP__
+
 #include <stdexcept>
 #include <sstream>
 #include <algorithm>
 #include <string>
 #include <vector>
+#include "ConstantDataProvider.fwd.hpp"
 
 template <typename data_T>
 struct StandardVerifier {
@@ -14,7 +16,7 @@ struct StandardVerifier {
 };  // end struct StandardVerifier
 
 template <typename data_T, typename wrapper_T, typename loader_T,
-		  typename verifier_T = StandardVerifier<data_T>>
+		  typename verifier_T> 
 class ConstantDataProvider {
 public:
 	using data_type = data_T;

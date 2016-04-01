@@ -1,8 +1,11 @@
 
+
+#include <vector>
 #include <iostream>
 #include "Hull.hpp"
 #include "SystemData.pb.h"
 #include "CardData.pb.h"
+
 
 bool Hull::HullVerifier::operator()(data_type* hull) {
 	auto warn = [&hull](std::string msg) {
@@ -11,15 +14,12 @@ bool Hull::HullVerifier::operator()(data_type* hull) {
 	};
 	if (hull->id() == data::HullData::universal) return true;
 
-
-
 	if (hull->systems_type_size() == 0) {
 		warn(
 			"No system types specified. Cannot determine system count. Fatal "
 			"Error!");
 		return false;
 	}
-
 
 	if (!hull->has_name() || hull->name() == "") warn("No name given");
 
@@ -50,6 +50,28 @@ bool Hull::HullVerifier::operator()(data_type* hull) {
 	}
 
 	return true;
-}
+}	// end verifier operator()}
 
-Hull::Hull(const data_type* hullData) : m_data(hullData) {}
+	Hull::Hull(const data_type* hullData) : m_data(hullData), m_systems() {}
+
+	bool Hull::trySetSystem(const System& system, size_t position) {
+		if (!verifySystemForPos(system, position)) return false;
+
+		m_systems.push_back(system);
+		return true;
+	}
+
+	bool Hull::verifySystemForPos(const System& system, size_t position) const {
+		// do we even have a slot there?
+		if (position >= m_data->systems_type_size()) return false;
+		// is it the right type for the slot
+		if (m_data->systems_type(position) != system.type()) return false;
+		return true;
+	}
+
+	bool Hull::trySetSystemsFromSequence(const std::vector<System>& systems) {
+		for (unsigned int i = 0; i < systems.size(); ++i) {
+			if (!trySetSystem(systems[i], i)) return false;
+		}
+		return true;
+	}  // end trySetSystemsFromSequence
