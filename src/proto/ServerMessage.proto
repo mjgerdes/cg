@@ -11,7 +11,7 @@ message ServerMessage {
   LoginTokenIssueType = 4;
   SystemCollectionResponseType = 5;
   LoginTokenInvalidResponseType = 6;
-
+HullCollectionResponseType = 7;
   };
   required ServerMessageType msgType = 1;
   optional LoginResponse loginresponse = 2;
@@ -20,4 +20,5 @@ message ServerMessage {
   optional LoginTokenIssue login_token_issue = 5;
   optional SystemCollectionResponse system_collection_response = 6;
   optional LoginTokenInvalidResponse login_token_invalid_response = 7;
+  optional HullCollectionResponse hull_collection_response = 8;
 }

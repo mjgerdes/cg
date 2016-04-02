@@ -12,7 +12,7 @@ message ClientMessage {
   CardCollectionRequestType = 6;
   LoginTokenType = 7;
   SystemCollectionRequestType = 8;
-
+HullCollectionRequestType = 9;
   };
   required ClientMessageType msgType = 1;
   optional Login login = 2;
@@ -22,4 +22,5 @@ message ClientMessage {
   optional CardCollectionRequest card_collection_request = 6;
   optional LoginToken login_token = 7;
   optional SystemCollectionRequest system_collection_request = 8;
+  optional HullCollectionRequest hull_collection_request = 9;
   }

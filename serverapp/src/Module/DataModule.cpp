@@ -22,6 +22,9 @@ void DataModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 		ClientMessage::SystemCollectionRequestType,
 		&ClientMessage::system_collection_request,
 		&DataModule::onSystemCollectionRequest);
+	reg.entry<HullCollectionRequest>(ClientMessage::HullCollectionRequestType,
+									 &ClientMessage::hull_collection_request,
+									 &DataModule::onHullCollectionRequest);
 }
 
 void DataModule::onCardCollectionRequest(const msg::CardCollectionRequest* msg,
@@ -57,6 +60,22 @@ void DataModule::onSystemCollectionRequest(
 	}
 }  // end onSystemCollectionRequest
 
+void DataModule::onHullCollectionRequest(const msg::HullCollectionRequest* msg,
+										 WSConnection source) {
+	auto maybeId = m_auth->getIdFor(source);
+	if (!maybeId) {
+		return;
+	}
+
+	{
+		odb::transaction t(m_db->begin());
+		auto player =
+			std::unique_ptr<db::Player>{m_db->load<db::Player>(*maybeId)};
+		sendHullCollectionResponse(player->getHullCollection(),
+								   std::move(source));
+	}
+}  // end onHullCollectionRequest
+
 void DataModule::sendCardCollectionResponse(
 	const db::Player::CardContainer_type& cards, WSConnection destination) {
 	auto msg = makeServerMessage();
@@ -72,8 +91,17 @@ void DataModule::sendSystemCollectionResponse(
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::SystemCollectionResponseType);
 	for (const auto& id : systems) {
-		std::cout << id << std::endl;
 		msg->mutable_system_collection_response()->add_system_ids(id);
 	}
 	sendMessage(msg, destination);
 }  // end sendsystemCollectionResponse
+
+void DataModule::sendHullCollectionResponse(
+	const db::Player::HullContainer_type& hulls, WSConnection destination) {
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::HullCollectionResponseType);
+	for (const auto& hullId : hulls) {
+		msg->mutable_hull_collection_response()->add_hull_ids(hullId);
+	}
+	sendMessage(msg, destination);
+}

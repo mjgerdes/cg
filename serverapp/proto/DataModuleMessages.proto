@@ -2,6 +2,8 @@ syntax="proto2";
 package msg;
 import "CardData.proto";
 import "SystemData.proto";
+import "HullData.proto";
+
 message CardCollectionRequest {
 }
 
@@ -13,4 +15,11 @@ message SystemCollectionRequest {}
 
 message SystemCollectionResponse {
   repeated data.SystemData.SystemId system_ids = 1;
+}
+
+message HullCollectionRequest {
+}
+
+message HullCollectionResponse {
+  repeated data.HullData.HullId hull_ids = 1;
 }

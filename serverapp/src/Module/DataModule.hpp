@@ -19,18 +19,22 @@ public:
 
 	inline CardProvider* getCardProvider() { return &m_cp; };
 	inline SystemProvider* getSystemProvider() { return &m_sp; }
-	inline HullProvider* getHullProvider() { return &m_hp;}
+	inline HullProvider* getHullProvider() { return &m_hp; }
 
 private:
 	void onCardCollectionRequest(const msg::CardCollectionRequest* msg,
 								 WSConnection source);
 	void onSystemCollectionRequest(const msg::SystemCollectionRequest* msg,
 								   WSConnection source);
+	void onHullCollectionRequest(const msg::HullCollectionRequest* msg,
+								 WSConnection source);
+
 	void sendCardCollectionResponse(const db::Player::CardContainer_type& cards,
 									WSConnection destination);
 	void sendSystemCollectionResponse(
 		const db::Player::SystemContainer_type& systems,
 		WSConnection destination);
+	void sendHullCollectionResponse(const db::Player::HullContainer_type& hulls, WSConnection destination);
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 private:
