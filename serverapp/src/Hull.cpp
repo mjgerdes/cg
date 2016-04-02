@@ -6,7 +6,6 @@
 #include "SystemData.pb.h"
 #include "CardData.pb.h"
 
-
 bool Hull::HullVerifier::operator()(data_type* hull) {
 	auto warn = [&hull](std::string msg) {
 		std::cerr << "Warning: " << hull->name() << "(" << hull->id()
@@ -50,28 +49,35 @@ bool Hull::HullVerifier::operator()(data_type* hull) {
 	}
 
 	return true;
-}	// end verifier operator()}
+}  // end verifier operator()}
 
-	Hull::Hull(const data_type* hullData) : m_data(hullData), m_systems() {}
+Hull::Hull(const data_type* hullData) : m_data(hullData), m_systems() {
+m_systems.reserve(m_data->systems_type_size());
+}
 
-	bool Hull::trySetSystem(const System& system, size_t position) {
-		if (!verifySystemForPos(system, position)) return false;
+bool Hull::trySetSystem(System::System_ptr system, size_t pos) {
+	if (!system) return false;
+	return trySetSystem(*system, pos);
+}
 
-		m_systems.push_back(system);
-		return true;
+bool Hull::trySetSystem(const System& system, size_t position) {
+	if (!verifySystemForPos(system, position)) return false;
+
+	m_systems.push_back(system);
+	return true;
+}
+
+bool Hull::verifySystemForPos(const System& system, size_t position) const {
+	// do we even have a slot there?
+	if (position >= m_data->systems_type_size()) return false;
+	// is it the right type for the slot
+	if (m_data->systems_type(position) != system.type()) return false;
+	return true;
+}
+
+bool Hull::trySetSystemsFromSequence(const std::vector<System>& systems) {
+	for (unsigned int i = 0; i < systems.size(); ++i) {
+		if (!trySetSystem(systems[i], i)) return false;
 	}
-
-	bool Hull::verifySystemForPos(const System& system, size_t position) const {
-		// do we even have a slot there?
-		if (position >= m_data->systems_type_size()) return false;
-		// is it the right type for the slot
-		if (m_data->systems_type(position) != system.type()) return false;
-		return true;
-	}
-
-	bool Hull::trySetSystemsFromSequence(const std::vector<System>& systems) {
-		for (unsigned int i = 0; i < systems.size(); ++i) {
-			if (!trySetSystem(systems[i], i)) return false;
-		}
-		return true;
-	}  // end trySetSystemsFromSequence
+	return true;
+}  // end trySetSystemsFromSequence

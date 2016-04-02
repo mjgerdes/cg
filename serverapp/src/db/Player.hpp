@@ -63,11 +63,17 @@ private:
 #pragma db transient
 	std::unique_ptr<PlayerAccount> m_account;
 
+#pragma db unordered
 	CardContainer_type m_cardCollection;
+#pragma db unordered
 	SystemContainer_type m_systemCollection;
+#pragma db unordered
 	HullContainer_type m_hullCollection;
 
+
+#pragma db value_not_null
 	std::vector<std::shared_ptr<db::SystemPlan>> m_systemPlanCollection;
+#pragma db value_not_null
 	std::vector<std::shared_ptr<ShipPlan>> m_shipPlanCollection;
 
 	void init(odb::callback_event e, odb::database& db);

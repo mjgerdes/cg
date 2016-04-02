@@ -15,6 +15,15 @@
 #include "db/ShipPlan.hpp"
 
 struct NewPlayerInitializer {
+
+/*
+	NewPlayerInitializer(const NewPlayerInitializer& other)
+		: m_db(other.m_db), m_cp(other.m_cp), m_sp(other.m_sp), m_hp(other.m_hp),
+		  m_initialCardGift(std::move(other.m_initialCardGift)), m_initialSystemGift(std::move(other.m_initialSystemGift)),
+		  m_initialHullGift(std::move(other.m_initialHullGift)),
+		  m_shipPlanGift(std::move(other.m_shipPlanGift)) {}
+*/	
+
 	NewPlayerInitializer(GameServer::Database_type* db, CardProvider* cp,
 						 SystemProvider* sp, HullProvider* hp)
 		: m_db(db),
@@ -42,14 +51,15 @@ struct NewPlayerInitializer {
 		using S = data::SystemData;
 		using C = data::CardData;
 		auto parent = this;
-		auto addSystem = [parent](System::Id_type system,
+		auto hull = Hull{m_hp->get(data::HullData::basic_wombat)};
+		unsigned int j = 0;
+		auto addSystem = [parent, &hull, &j](System::Id_type system,
 								  std::initializer_list<Card::Id_type> cards) {
 			auto sys = parent->m_sp->get(system);
 			for (const auto& card : cards) {
 				sys.tryAddCard(parent->m_cp->get(card));
 			}
-			parent->m_systemPlanGift.push_back(
-				std::make_shared<db::SystemPlan>(sys));
+			hull.trySetSystem(sys, j++);
 		};
 
 		addSystem(
@@ -91,10 +101,7 @@ struct NewPlayerInitializer {
 			 C::basic_mercenary, C::basic_laser_flurry, C::basic_laser_flurry,
 			 C::basic_laser_flurry, C::basic_missile});
 
-// hull
-
-
-
+		m_shipPlanGift = std::make_shared<db::ShipPlan>(hull);
 	}  // end constructor
 
 	inline void operator()(typename db::PlayerAccount::Id_type id,
@@ -107,8 +114,16 @@ struct NewPlayerInitializer {
 			newPlayer.initializeSystemCollection(m_initialSystemGift);
 			newPlayer.initializeHullCollection(m_initialHullGift);
 
-			//			m_db->persist(*m_shipPlanGift);
-			//			newPlayer.addShipPlan(m_shipPlanGift);
+// first we persist the systems
+			for(const auto& systemPlan : m_shipPlanGift->systemPlans()) {
+				m_db->persist(*systemPlan);
+				newPlayer.addSystemPlan(systemPlan);
+			}
+
+// now we give the ship plan, which is linked to the systems
+			m_db->persist(*m_shipPlanGift);
+			newPlayer.addShipPlan(m_shipPlanGift);
+
 			m_db->persist(newPlayer);
 			t.commit();
 		}
@@ -122,8 +137,9 @@ private:
 	db::Player::CardContainer_type m_initialCardGift;
 	db::Player::SystemContainer_type m_initialSystemGift;
 	db::Player::HullContainer_type m_initialHullGift;
+
+// shared because std::function must be copyiable
 	std::shared_ptr<db::ShipPlan> m_shipPlanGift;
-	std::vector<std::shared_ptr<db::SystemPlan>> m_systemPlanGift;
 };  // end struct NewPlayerInitializer
 
 #endif

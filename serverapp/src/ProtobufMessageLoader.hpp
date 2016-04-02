@@ -47,7 +47,8 @@ struct ProtobufMessageLoader {
 					std::cerr << "    Warning in ProtobufMessageLoader: Verify "
 								 "failed on file " << file.path() << std::endl;
 				}
-				std::cout << "Loaded " << msg.name() << " id " << msg.id() << std::endl;
+// FIXME: enable for verbose mode
+//				std::cout << "Loaded " << msg.name() << " id " << msg.id() << std::endl;
 			} else {
 				std::cerr << "    Warning in ProtobufMessageLoader: Could not parse"
 						  << file.path() << std::endl;

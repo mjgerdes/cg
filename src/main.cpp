@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 									 "/home/marius/cg/serverapp/data/hulls");
 	authModule->setNewPlayerCallback(
 		NewPlayerInitializer{gameServer->getDB(), dataModule->getCardProvider(),
-				dataModule->getSystemProvider(), dataModule->getHullProvider()});
+					dataModule->getSystemProvider(), dataModule->getHullProvider()});
 	gameServer->loadModule(std::move(authModule));
 	gameServer->loadModule(std::move(dataModule));
 	//	gameServer->emplaceModule<AuthModule>(gameServer->getDB(),

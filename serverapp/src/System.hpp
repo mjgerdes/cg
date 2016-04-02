@@ -14,6 +14,7 @@ public:
 	using data_type = data::SystemData;
 	using SMS_type = Card::SMS_type;
 	using Tag_type = Card::Tag_type;
+	using System_ptr = std::unique_ptr<System>;
 
 	struct SystemVerifier {
 		bool operator()(const data_type* sys);

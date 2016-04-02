@@ -11,12 +11,7 @@ bool System::SystemVerifier::operator()(const data_type* sys) {
 				  << "): " << warning << std::endl;
 	};
 
-	// name
-	if (!sys->has_name()) {
-		std::cerr << "Fatal erro: System with id " << sys->id()
-				  << " has no name!\n";
-		return false;
-	}
+
 
 	// id
 	if (sys->id() == data_type::universal ||
@@ -24,6 +19,15 @@ bool System::SystemVerifier::operator()(const data_type* sys) {
 		sys->id() == data_type::empty_military ||
 		sys->id() == data_type::empty_support)
 		return true;
+
+
+// name
+	if (!sys->has_name()) {
+		std::cerr << "Fatal erro: System with id " << sys->id()
+				  << " has no name!\n";
+		return false;
+	}
+
 
 	// description set
 	if (!sys->has_description() || sys->description().empty())

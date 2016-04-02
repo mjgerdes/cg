@@ -1,6 +1,5 @@
 
 
-
 #ifndef __SYSTEMPLAN_HPP__
 #define __SYSTEMPLAN_HPP__
 #include <odb/core.hxx>
@@ -18,6 +17,7 @@ class SystemPlan {
 public:
 	using Id_type = unsigned long;
 	using System_ptr = std::unique_ptr<System>;
+
 public:
 	SystemPlan(const System&);
 
@@ -25,13 +25,13 @@ public:
 
 	inline Id_type id() const { return m_id; }
 	inline System::Id_type system() const { return m_systemId; }
-	inline const std::vector<Card::Id_type>& cards() const { return m_cards;}
+	inline const std::vector<Card::Id_type>& cards() const { return m_cards; }
 
 private:
 	SystemPlan();
 
-
 	void fillCards(const System&);
+
 private:
 	friend class odb::access;
 
@@ -39,8 +39,8 @@ private:
 	Id_type m_id;
 	System::Id_type m_systemId;
 	std::vector<Card::Id_type> m_cards;
-}; // end class SystemPlan
+};  // end class SystemPlan
 
-} // end namespace db
+}  // end namespace db
 
 #endif

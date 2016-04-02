@@ -8,7 +8,8 @@
 class Card {
 public:
 	using data_type = data::CardData;
-	using Id_type = typename data_type::CardId;
+//	using Id_type = typename data_type::CardId;
+	using Id_type = data::CardData::CardId;
 	using SMS_type = data::CardData::SMSType;
 	using Tag_type = data::CardTag::TagId;
 	struct CardVerifier {

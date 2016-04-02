@@ -8,7 +8,7 @@
 #include "ConstantDataProvider.fwd.hpp"
 
 using HullProvider = ConstantDataProvider<
-	data::HullData, System,
+	data::HullData, Hull,
 	ProtobufMessageCompileLoader<data::HullData, data::HullDataWrapper>,
 	Hull::HullVerifier>;
 

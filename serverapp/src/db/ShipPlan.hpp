@@ -28,7 +28,8 @@ public:
 	inline Hull::Id_type hull() const { return m_hullId; }
 	inline const SystemPlans_type& systemPlans() const { return m_systemPlans; }
 
-	Hull_ptr load(const HullProvider&, const SystemProvider&, const CardProvider&);
+	Hull_ptr load(const HullProvider&, const SystemProvider&,
+				  const CardProvider&);
 
 private:
 	friend class odb::access;

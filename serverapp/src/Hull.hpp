@@ -27,9 +27,10 @@ public:
 
 public:
 	inline Id_type id() const { return m_data->id(); }
-	inline unsigned int systemCount() const { return m_systems.size(); }
+	inline unsigned int size() const { return m_systems.size(); }
 	inline const std::vector<System>& systems() const { return m_systems; }
 	bool trySetSystemsFromSequence(const std::vector<System>&);
+	bool trySetSystem(System::System_ptr system, size_t pos);
 	bool trySetSystem(const System& system, size_t position);
 	bool verifySystemForPos(const System&, size_t) const;
 
