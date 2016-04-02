@@ -73,7 +73,7 @@ public:
 		const auto& fullString = Utility::concat(std::forward<args_T>(args)...);
 		auto msg = std::make_unique<WSServer::SendStream>();
 		*msg << fullString;
-		log<net>("Sent message to ", Utility::connectionString(reciever), "\n",
+		log<dbg>("Raw message to ", Utility::connectionString(reciever), "\n",
 				 fullString);
 		server.send(reciever, std::move(msg));
 	}

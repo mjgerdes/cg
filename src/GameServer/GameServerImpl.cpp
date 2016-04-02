@@ -24,7 +24,7 @@ Impl::GameServerImpl(WSServer& serv, LogServer& logServ)
 void Impl::sendMessage(const GameServer::StandardSendMessage& msg, WSConnection& destination) {
 	std::string temp;
 	msg->SerializeToString(&temp);
-	log<dbg>("temp: ", temp);
+//	log<dbg>("temp: ", temp);
 	sendRaw(destination, std::move(temp));
 } // end sendMessage
 

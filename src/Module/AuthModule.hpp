@@ -15,20 +15,23 @@ public:
 	using PlayerId_type = typename PlayerAccount_type::Id_type;
 	using NewPlayerCallback_type =
 		std::function<void(PlayerId_type, WSConnection)>;
-
+	using NewPlayerCallback_ptr = std::unique_ptr<NewPlayerCallback_type>;
 	enum ConnectionStatus { unauthed = 0, authed = 1, tokenAuth = 2 };
 
 public:
 	AuthModule(GameServer::Database_type* db, GameServer::LogServer_type* ls)
-		: dbServer(db), logServer(*ls) {}
+		: dbServer(db), logServer(*ls), m_lastToken(0) {}
 
 	void setNewPlayerCallback(NewPlayerCallback_type);
 	Utility::optional<PlayerId_type> getIdFor(WSConnection);
 	ConnectionStatus connectionStatusOf(const WSConnection& connection);
+
 private:
-		using PlayerAccount_ptr = std::unique_ptr<db::PlayerAccount>;
+	using PlayerAccount_ptr = std::unique_ptr<db::PlayerAccount>;
 	using token_type = unsigned long;
-	using PlayerAccountTokens = boost::container::flat_map<token_type, PlayerId_type>;
+	using PlayerAccountTokens =
+		boost::container::flat_map<token_type, PlayerId_type>;
+
 private:
 	// private member functions
 	void onLogin(const msg::Login* msg, const WSConnection source);
@@ -59,8 +62,8 @@ private:
 
 	NewPlayerCallback_type m_newPlayerCallback;
 
-
-/*! Map from session tokens to playerids to allow remember me functionality */
+	/*! Map from session tokens to playerids to allow remember me functionality
+	 */
 	PlayerAccountTokens m_tokens;
 
 	/*! The last token issued, registerTokenFor automatically increases this */

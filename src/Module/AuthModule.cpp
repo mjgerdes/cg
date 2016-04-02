@@ -9,6 +9,15 @@
 using namespace Utility;
 using namespace Log;
 using namespace db;
+// used only in this module
+	struct AuthMessage : LogServer::LogMessage {
+		AuthMessage(const std::string& msg) : LogServer::LogMessage(msg) {}
+		inline virtual void write() override {
+			std::cout << "[AUTH] " << m_msg << std::endl;
+		}
+	}; // end struct Authmessage
+	using auth = AuthMessage;
+
 
 void AuthModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	using namespace msg;
@@ -53,7 +62,7 @@ AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
 }  // end connectionStatusOf
 
 void AuthModule::setNewPlayerCallback(NewPlayerCallback_type f) {
-	m_newPlayerCallback = f;
+	m_newPlayerCallback = std::move(f);
 }
 
 optional<AuthModule::PlayerId_type> AuthModule::getIdFor(
@@ -68,7 +77,7 @@ optional<AuthModule::PlayerId_type> AuthModule::getIdFor(
 void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	logServer.log<dbg>("Hello to ", msg->email());
 	if (connectionStatusOf(source) == authed) {
-		logServer.log<net>("Player `", msg->email(), "` is already connected: ",
+		logServer.log<auth>("Player `", msg->email(), "` is already connected: ",
 						   connectionString(source));
 		// FIXME: this might not make sense, what if someone is logged in and
 		// they log in with different account details
@@ -84,7 +93,7 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 	transaction.commit();
 
 	if (!player) {
-		logServer.log<net>("Invalid login from player `", msg->email(),
+		logServer.log<auth>("Invalid login from player `", msg->email(),
 						   "` with connection: ", connectionString(source));
 		sendLoginResponse(false, source);
 		return;
@@ -97,11 +106,11 @@ void AuthModule::onLogin(const msg::Login* msg, const WSConnection source) {
 
 void AuthModule::onRegistration(const msg::Registration* msg,
 								WSConnection source) {
-	logServer.log<net>("Registering player from connection: ",
+	logServer.log<auth>("Registering player from connection: ",
 					   connectionString(source));
 
 	if (connectionStatusOf(source) != unauthed) {
-		logServer.log<net>(
+		logServer.log<auth>(
 			"Registration attempt from an already registered User : ",
 			connectionString(source));
 		sendRegistrationResponse(false, source);
@@ -117,7 +126,7 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 		t.commit();
 
 		if (maybePlayer) {
-			logServer.log<net>("Invalid registration attempt; player `",
+			logServer.log<auth>("Invalid registration attempt; player `",
 							   msg->email(),
 							   "` already exists. From connection: ",
 							   connectionString(source));
@@ -140,13 +149,13 @@ void AuthModule::onRegistration(const msg::Registration* msg,
 	// send successful register response
 	// (might not need this)
 //	sendRegistrationResponse(true, source);
-	logServer.log<net>("Player `", msg->email(), " successfully registered");
+	logServer.log<auth>("Player `", msg->email(), " successfully registered");
 }  // end onRegistration
 
 void AuthModule::onDisconnect(const msg::Disconnect* msg,
 							  WSConnection connection) {
 	if (connectionStatusOf(connection) == authed) {
-		logServer.log<net>("Disconnect; releasing auth for connection ",
+		logServer.log<auth>("Disconnect; releasing auth for connection ",
 						   Utility::connectionString(connection));
 		m_connections.erase(&(*connection));
 	}
@@ -156,13 +165,13 @@ void AuthModule::onConnect(const msg::Connect* msg,
 						   WSConnection newConnection) {}  // end onConnect
 
 void AuthModule::onLoginToken(const msg::LoginToken* msg, WSConnection source) {
-	logServer.log<net>("Recieved login token ", msg->token(), " for user ",
+	logServer.log<auth>("Recieved login token ", msg->token(), " for user ",
 					   msg->email(), " from connection ",
 					   connectionString(source));
 
 	const auto idForToken = m_tokens.find(msg->token());
 	if (idForToken == m_tokens.cend()) {
-		logServer.log<net>("Invalid or expired login token for user ",
+		logServer.log<auth>("Invalid or expired login token for user ",
 						   msg->email(), " from connection ",
 						   connectionString(source));
 		sendInvalidTokenResponse(source);
@@ -183,7 +192,7 @@ void AuthModule::onLoginToken(const msg::LoginToken* msg, WSConnection source) {
 
 		// possible attack
 		if (account->email() != msg->email()) {
-			logServer.log<net>(
+			logServer.log<auth>(
 				"Email/id mismatch for token from user ", msg->email(),
 				", tried to authenticate for token for user ", account->email(),
 				"; connection ", connectionString(source));
@@ -197,6 +206,7 @@ void AuthModule::onLoginToken(const msg::LoginToken* msg, WSConnection source) {
 
 void AuthModule::sendLoginTokenIssue(token_type token,
 									 WSConnection destination) {
+	logServer.log<auth>("Handing out login token to ", connectionString(destination));
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::LoginTokenIssueType);
 	msg->mutable_login_token_issue()->set_token(token);
@@ -204,6 +214,7 @@ void AuthModule::sendLoginTokenIssue(token_type token,
 }
 
 void AuthModule::sendInvalidTokenResponse(WSConnection destination) {
+	logServer.log<auth>("Sending invalid login token response");
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::LoginTokenInvalidResponseType);
 	sendMessage(msg, destination);
@@ -215,7 +226,7 @@ AuthModule::token_type AuthModule::registerTokenFor(PlayerId_type id) {
 }
 
 void AuthModule::giveAuth(WSConnection connection, PlayerAccount_ptr account) {
-	sendLoginTokenIssue(registerTokenFor(account->id()), connection);
+		sendLoginTokenIssue(registerTokenFor(account->id()), connection);
 	m_connections[&(*connection)] = std::move(account);
 	sendLoginResponse(true, connection);
 }

@@ -44,7 +44,7 @@ var registerMsg = new ClientMessage({
 		WebSockService.sendMsg(registerMsg);
 		};
 
-
+/*
 if($cookies.get("email")) {
 var msg = new ClientMessage({
 	"msgType" : "LoginTokenType",
@@ -52,8 +52,6 @@ var msg = new ClientMessage({
 	globalEmail = $cookies.get("email");
 	WebSockService.sendMsg(msg);
 }
-	
-
-
+*/
 });
 			   

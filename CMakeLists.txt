@@ -15,7 +15,7 @@ set(CG_ORIGIN "${PROJECT_SOURCE_DIR}")
 # The following variable must be set to the boost root containing instrumented libraries of boost version 1.60
 # Note that the program will only link against them if FSAN is set to 'thread'
 set(BOOST160_TSAN_ROOT "${PROJECT_SOURCE_DIR}/boost-1.60-tsan")
-
+set(BOOST160_ASAN_ROOT "${PROJECT_SOURCE_DIR}/boost-1.60-asan")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
   message("Note: No build type specified, choosing debug instead of release")

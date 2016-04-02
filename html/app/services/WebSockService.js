@@ -32,6 +32,7 @@ rememberMeDone = true;
 
 
 var ws = new WebSocket("ws://golm.local:8080/index");
+ws.binaryType = 'arraybuffer';
 	ws.onopen = function (evt) {
 		ready = true;
 if($cookies.get("email")) {
@@ -42,6 +43,14 @@ var msg = new ClientMessage({
 	ws.send(msg.toArrayBuffer());
 	}
 		};
+
+ws.onclose = function(e) {
+//console.log("Websock close: " ,e);
+}
+
+ws.onerror = function(e) {
+	console.log("Websock error: ", e);
+	}
 
   ws.onmessage = function(evt) {
 //    try {
