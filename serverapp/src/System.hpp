@@ -6,8 +6,6 @@
 #include "SystemData.pb.h"
 #include "Card.hpp"
 
-
-
 class System {
 public:
 	using Id_type = data::SystemData::SystemId;
@@ -28,16 +26,16 @@ public:
 	System(System&& other) = default;
 	System& operator=(const System&) = default;
 	System& operator=(System&& other) = default;
-public:
 
+public:
 	inline Id_type id() const { return m_data->id(); }
 	inline unsigned int capacity() const { return m_data->capacity(); }
 	inline unsigned int size() const { return m_cards.size(); }
 	inline SMS_type type() const { return m_data->type(); }
-	inline 	const std::vector<Card>& cards() const { return m_cards; }
+	inline const std::vector<Card>& cards() const { return m_cards; }
 
 	bool tryAddCards(const std::vector<Card>&);
-	bool tryAddCard(const Card&);	
+	bool tryAddCard(const Card&);
 	bool verifyCard(const Card&) const;
 
 private:

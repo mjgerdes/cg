@@ -36,7 +36,8 @@ struct NewPlayerInitializer {
 		m_initialCardGift.reserve(m_cp->size() - 1);
 		for (unsigned int i = data::CardData::basic_missile; i < m_cp->size();
 			 ++i) {
-			m_initialCardGift.push_back(static_cast<data::CardData::CardId>(i));
+//			m_initialCardGift.push_back(static_cast<data::CardData::CardId>(i));
+			m_initialCardGift.push_back(m_cp->get(static_cast<Card::Id_type>(i)).id());
 		}
 
 		m_initialSystemGift.reserve(m_sp->size() - 1);

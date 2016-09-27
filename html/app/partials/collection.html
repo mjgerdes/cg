@@ -10,5 +10,6 @@
 <div class="col-md-10">
 <div ng-show="showCardsp" ng-repeat="x in cards track by $index"><cg-card card="x"></cg-card></div>
 <div ng-show="showSystemsp" ng-repeat="x in systems track by $index"><cg-system system="x" health="x.health" cards="x.capacity"></cg-system></div>
+<div ng-show="showHullsp" ng-repeat="x in hulls track by $index"><cg-hull hull="x"></cg-hull></div>
 </div>
 </div>

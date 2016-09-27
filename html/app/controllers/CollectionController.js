@@ -7,17 +7,29 @@ $scope.card_ids = [];
 $scope.cards = [];
 $scope.system_ids = [];
 	$scope.systems = []
+$scope.hullIds = [];
+	$scope.hulls = [];
+
 $scope.showCardsp = false;
 	$scope.showSystemsp = true;
+$scope.showHullsp = false;
 $scope.showCards = function () {
 	$scope.showCardsp = true;
 	$scope.showSystemsp = false;
+	$scope.showHullsp = false;
 	};
 
 	$scope.showSystems = function() {
 		$scope.showCardsp = false;
 		$scope.showSystemsp = true;
+		$scope.showHullsp = false;
 		};
+
+	$scope.showHulls = function() {
+		$scope.showCardsp = false;
+		$scope.showSystemsp = false;
+		$scope.showHulls = true;
+		}
 
 
 // cardcollectionresponse
@@ -36,7 +48,15 @@ $scope.system_ids = msg.system_collection_response.system_ids;
 		var temp = CardDataService.get("systems", $scope.system_ids[i]);
 		$scope.systems.push(temp);
 		}
+	});
 
+// hull collection request
+WebSockService.registerHandler(ServerMessageTypes.HullCollectionResponseType, function (msg) {
+$scope.hull_ids = msg.hull_collection_response.hull_ids;
+	for(var i = 0; i < $scope.hull_ids.length; i++) {
+		var temp = CardDataService.get("hulls", $scope.hull_ids[i]);
+		$scope.hulls.push(temp);
+		}
 	});
 
 var cardCollectionRequestMsg = new ClientMessage({
@@ -46,6 +66,11 @@ var cardCollectionRequestMsg = new ClientMessage({
 var systemCollectionRequestMsg = new ClientMessage({
 	"msgType" : "SystemCollectionRequestType"});
 WebSockService.sendMsg(systemCollectionRequestMsg);
+
+var hullCollectionRequestMsg = new ClientMessage({
+	"msgType" : "HullCollectionRequestType"});
+	WebSockService.sendMsg(hullCollectionRequestMsg);
+
 // remember me stuff
 WebSockService.registerHandler(ServerMessageTypes.LoginResponseType, function(msg) {
 //	WebSockService.sendMsg(cardCollectionRequestMsg);
