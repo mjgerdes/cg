@@ -20,5 +20,10 @@ app.config(function ($routeProvider) {
                 controller: 'CollectionController',
                 templateUrl: 'app/partials/collection.html'
             })
+	        .when('/play',
+            {
+                controller: 'PlayController',
+                templateUrl: 'app/partials/play.html'
+            })
         .otherwise({ redirectTo: '/login' });
 });
