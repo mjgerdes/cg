@@ -6,13 +6,17 @@ import "Login.proto";
 import "Registration.proto";
 import "internal.proto";
 import "DataModuleMessages.proto";
+import "PlayModuleMessages.proto";
+
 
 message ClientMessage {
+
   enum ClientMessageType { LoginType = 2; RegistrationType = 3; DisconnectType = 4; ConnectType =5;
   CardCollectionRequestType = 6;
   LoginTokenType = 7;
   SystemCollectionRequestType = 8;
 HullCollectionRequestType = 9;
+PlayInitiationRequestType = 10;
   };
   required ClientMessageType msgType = 1;
   optional Login login = 2;
@@ -23,4 +27,5 @@ HullCollectionRequestType = 9;
   optional LoginToken login_token = 7;
   optional SystemCollectionRequest system_collection_request = 8;
   optional HullCollectionRequest hull_collection_request = 9;
+  optional PlayInitiationRequest play_initiation_request = 10;
   }
