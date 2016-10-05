@@ -8,6 +8,7 @@
 #include "LogServer.hpp"
 #include "Module/AuthModule.hpp"
 #include "Module/DataModule.hpp"
+#include "Module/PlayModule.hpp"
 #include "NewPlayerInitializer.hpp"
 
 using namespace std;
@@ -29,11 +30,17 @@ int main(int argc, char** argv) {
 									 "/home/marius/cg/serverapp/data/cards",
 									 "/home/marius/cg/serverapp/data/systems",
 									 "/home/marius/cg/serverapp/data/hulls");
-	authModule->setNewPlayerCallback(
-		NewPlayerInitializer{gameServer->getDB(), dataModule->getCardProvider(),
-					dataModule->getSystemProvider(), dataModule->getHullProvider()});
+	authModule->setNewPlayerCallback(NewPlayerInitializer{
+		gameServer->getDB(), dataModule->getCardProvider(),
+		dataModule->getSystemProvider(), dataModule->getHullProvider()});
+
+	auto playModule = std::make_unique<PlayModule>(&(*authModule), &(*dataModule),
+												   gameServer->getDB(),
+												   gameServer->getLogServer());
+
 	gameServer->loadModule(std::move(authModule));
 	gameServer->loadModule(std::move(dataModule));
+	gameServer->loadModule(std::move(playModule));
 	//	gameServer->emplaceModule<AuthModule>(gameServer->getDB(),
 	// gameServer->getLogServer());
 
