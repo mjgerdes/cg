@@ -14,11 +14,11 @@ public:
 //	using Id_type = int;
 	PlayerAccount(const std::string& email, const std::string& password) : m_email(email), m_password(password), m_name("") {}
 
-	inline Id_type id() {
+	inline Id_type id() const {
 		return m_id;
 	}
 
-	inline std::string email() {
+	inline std::string email() const {
 		return m_email;
 	}
 	

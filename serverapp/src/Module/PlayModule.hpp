@@ -10,7 +10,7 @@
 class PlayModule : public GameServer::StandardModule {
 public:
 	PlayModule(AuthModule* auth, DataModule* data,
-			   GameServer::Database_type* db);
+			   GameServer::Database_type* db, GameServer::LogServer_type* ls);
 
 private:
 	void onPlayInitiationRequest(const msg::PlayInitiationRequest* msg,
@@ -19,9 +19,11 @@ private:
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 private:
-	GameServer::Database_type* m_db;
+
 	AuthModule* m_auth;
 	DataModule* m_data;
+	GameServer::Database_type* m_db;
+	GameServer::LogServer_type& logServer;
 };
 
 #endif

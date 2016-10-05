@@ -14,7 +14,6 @@
 #include "Hull.hpp"
 #include "ShipPlan.hpp"
 
-
 namespace db {
 
 #pragma db object callback(init)
@@ -28,6 +27,7 @@ public:
 public:
 	Player(Id_type newId) : m_id(newId) {}
 
+	inline const PlayerAccount& account() const { return *m_account; }
 	void initializeCardCollection(const CardContainer_type&);
 	void initializeSystemCollection(const SystemContainer_type&);
 	void initializeHullCollection(const HullContainer_type&);
@@ -69,7 +69,6 @@ private:
 	SystemContainer_type m_systemCollection;
 #pragma db unordered
 	HullContainer_type m_hullCollection;
-
 
 #pragma db value_not_null
 	std::vector<std::shared_ptr<db::SystemPlan>> m_systemPlanCollection;
