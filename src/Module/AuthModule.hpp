@@ -25,6 +25,7 @@ public:
 	void setNewPlayerCallback(NewPlayerCallback_type);
 	Utility::optional<PlayerId_type> getIdFor(WSConnection);
 	ConnectionStatus connectionStatusOf(const WSConnection& connection);
+	ConnectionStatus connectionStatusOf(const GameServer::ConnectionId connection);
 
 private:
 	using PlayerAccount_ptr = std::unique_ptr<db::PlayerAccount>;

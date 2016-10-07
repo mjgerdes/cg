@@ -31,6 +31,7 @@ private:
 	GameServer::Database_type* m_db;
 	GameServer::LogServer_type& logServer;
 
+friend class MMRQueue;
 	std::unique_ptr<MMRQueue> m_mmr;
 std::thread m_mmrThread;
 };

@@ -55,7 +55,12 @@ void AuthModule::sendRegistrationResponse(bool wasSuccessful,
 
 AuthModule::ConnectionStatus AuthModule::connectionStatusOf(
 	const WSConnection& connection) {
-	if (m_connections.find(&*(connection)) != m_connections.cend()) {
+	return connectionStatusOf(&*(connection));
+} // end connectionStatusFor
+	
+
+	AuthModule::ConnectionStatus AuthModule::connectionStatusOf(const GameServer::ConnectionId connection) {
+	if (m_connections.find(connection) != m_connections.cend()) {
 		return authed;
 	}
 	return unauthed;

@@ -3,8 +3,9 @@
 #include <algorithm>
 #include <string>
 #include "MMRQueue.hpp"
+#include "Module/PlayModule.hpp"
 
-MMRQueue::MMRQueue() : m_waitTimeStep(3) {}
+MMRQueue::MMRQueue(PlayModule& parent) : m_waitTimeStep(3), m_parent(parent) {}
 
 void MMRQueue::run() {
 	while (true) {
@@ -40,19 +41,26 @@ void MMRQueue::tryMatch() {
 			m_mmrqueue.erase(j);
 			// j and all iterators > j are now invalidated, luckily i is smaller
 			m_mmrqueue.erase(i);
-			increaseWaitTime();
+			handleQueueElements();
 			return;
 		}
 	}
 }  // end tryMatch
 
-void MMRQueue::increaseWaitTime() {
-// FIXME: this step could be integrated with tryMatch's loop
-	// FIXME: we are not even measuring time - currently we just add 3 - value that is a guaranteed wait time after a tryMatch call
-	for(auto i = m_mmrqueue.begin(); i < m_mmrqueue.end(); ++i) {
-		i->waitTime += m_waitTimeStep; // this can wrap around after a while but oh well
-	}
-} // end increaseWaitTime
+void MMRQueue::handleQueueElements() {
+	// FIXME: this step could be integrated with tryMatch's loop
+	// FIXME: we are not even measuring time - currently we just add 3 - value
+	// that is a guaranteed wait time after a tryMatch call
+	for (auto i = m_mmrqueue.begin(); i < m_mmrqueue.end(); ++i) {
+		i->waitTime +=
+			m_waitTimeStep;  // this can wrap around after a while but oh well
+		if (m_parent.m_auth->connectionStatusOf(i->connection) == AuthModule::unauthed) {
+			// if someone has become unauthed while waiting in queue
+			// (disconnect), kick him out
+			m_mmrqueue.erase(i);
+		}
+	}  // end for loop
+}  // end handleQueueElements
 
 void MMRQueue::match(GameServer::ConnectionId p1, GameServer::ConnectionId p2) {
 

@@ -5,6 +5,9 @@
 #ifndef __MMRQUEUE_HPP__
 #define __MMRQUEUE_HPP__
 
+
+class PlayModule;
+
 class MMRQueue {
 public:
 	using MMR = unsigned int;
@@ -21,7 +24,7 @@ public:
 	};  // end MMRQueueElement
 
 public:
-	MMRQueue();
+	MMRQueue(PlayModule& parent);
 	void run();
 	void enqueue(IncomingElement e);
 
@@ -30,12 +33,13 @@ public:
 private:
 	void internalEnqueue(const IncomingElement& e);
 	void tryMatch();
-	void increaseWaitTime();
+	void handleQueueElements();
 	void match(GameServer::ConnectionId p1, GameServer::ConnectionId p2);
 
 private:
 	WaitTime_type m_waitTimeStep;
-
+	PlayModule& m_parent;
+	
 	Concurrent::Queue<IncomingElement> m_incoming;
 	std::vector<MMRQueueElement> m_mmrqueue;
 };  // end MMRQueue
