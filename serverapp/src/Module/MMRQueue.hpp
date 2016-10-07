@@ -27,6 +27,9 @@ public:
 // need this because of unique_ptr - thanks!
 	~MMRQueue();
 private:
+	void internalEnqueue(const IncomingElement& e);
+	void tryMatch();
+private:
 	Concurrent::Queue<IncomingElement> m_incoming;
 	std::vector<MMRQueueElement> m_mmrqueue;
 };  // end MMRQueue
