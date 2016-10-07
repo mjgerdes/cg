@@ -3,7 +3,7 @@
 #define __AUTHMODULE_HPP__
 
 #include <boost/container/flat_map.hpp>
-
+#include <unordered_map>
 #include "GameServer.hpp"
 #include "db/PlayerAccount.hpp"
 #include "optional.hpp"
@@ -20,12 +20,13 @@ public:
 
 public:
 	AuthModule(GameServer::Database_type* db, GameServer::LogServer_type* ls)
-		: dbServer(db), logServer(*ls), m_lastToken(0) {}
+		: dbServer(db), logServer(*ls), m_lastToken(0), m_reverseLookupMap() {}
 
 	void setNewPlayerCallback(NewPlayerCallback_type);
-	Utility::optional<PlayerId_type> getIdFor(WSConnection);
-	ConnectionStatus connectionStatusOf(const WSConnection& connection);
-	ConnectionStatus connectionStatusOf(const GameServer::ConnectionId connection);
+	Utility::optional<PlayerId_type> getIdFor(WSConnection) const;
+	ConnectionStatus connectionStatusOf(const WSConnection& connection) const;
+	ConnectionStatus connectionStatusOf(const GameServer::ConnectionId connection) const;
+	Utility::optional<WSConnection> reverseLookup(const GameServer::ConnectionId connection) const;
 
 private:
 	using PlayerAccount_ptr = std::unique_ptr<db::PlayerAccount>;
@@ -61,6 +62,7 @@ private:
 		boost::container::flat_map<GameServer::ConnectionId, PlayerAccount_ptr>;
 	PlayerAccountConnections m_connections;
 
+
 	NewPlayerCallback_type m_newPlayerCallback;
 
 	/*! Map from session tokens to playerids to allow remember me functionality
@@ -69,6 +71,10 @@ private:
 
 	/*! The last token issued, registerTokenFor automatically increases this */
 	token_type m_lastToken;
+
+	// map from connectionIds (just raw pointers) to actual safe shared pointers; this is map so we don't have to keep copying shared pointers on insert/delete
+	std::unordered_map<GameServer::ConnectionId, WSConnection> m_reverseLookupMap;
+
 };  // end class AuthModule
 
 #endif
