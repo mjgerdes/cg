@@ -29,6 +29,7 @@ public:
 private:
 	void internalEnqueue(const IncomingElement& e);
 	void tryMatch();
+	void match(GameServer::ConnectionId p1, GameServer::ConnectionId p2);
 private:
 	Concurrent::Queue<IncomingElement> m_incoming;
 	std::vector<MMRQueueElement> m_mmrqueue;
