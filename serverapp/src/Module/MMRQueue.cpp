@@ -54,6 +54,7 @@ void MMRQueue::handleQueueElements() {
 	for (auto i = m_mmrqueue.begin(); i < m_mmrqueue.end(); ++i) {
 		i->waitTime +=
 			m_waitTimeStep;  // this can wrap around after a while but oh well
+		// FIXME: race condition on m_auth
 		if (m_parent.m_auth->connectionStatusOf(i->connection) == AuthModule::unauthed) {
 			// if someone has become unauthed while waiting in queue
 			// (disconnect), kick him out
@@ -63,7 +64,7 @@ void MMRQueue::handleQueueElements() {
 }  // end handleQueueElements
 
 void MMRQueue::match(GameServer::ConnectionId p1, GameServer::ConnectionId p2) {
-
+	m_parent.startPlayModeFor(p1, p2);
 }
 
 MMRQueue::~MMRQueue() {}

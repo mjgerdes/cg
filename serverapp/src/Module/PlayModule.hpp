@@ -9,6 +9,7 @@
 #include <thread>
 
 class MMRQueue;
+class TableServer;
 
 class PlayModule : public GameServer::StandardModule {
 public:
@@ -17,6 +18,9 @@ public:
 public:
 	PlayModule(AuthModule* auth, DataModule* data,
 			   GameServer::Database_type* db, GameServer::LogServer_type* ls);
+
+	void startPlayModeFor(const GameServer::ConnectionId p1, const GameServer::ConnectionId p2);
+	
 // thanks unique_ptr
 	~PlayModule();
 private:
@@ -34,6 +38,10 @@ private:
 friend class MMRQueue;
 	std::unique_ptr<MMRQueue> m_mmr;
 std::thread m_mmrThread;
+
+	friend class TableServer;
+	std::unique_ptr<TableServer> m_tableServer;
+	std::thread m_tableThread;
 };
 
 #endif

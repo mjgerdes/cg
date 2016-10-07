@@ -7,6 +7,7 @@
 #include "PlayerAccount_odb.h"
 #include "Player_odb.h"
 #include "Module/MMRQueue.hpp"
+#include "Module/TableServer.hpp"
 
 using namespace Log;
 using namespace Utility;
@@ -16,7 +17,7 @@ struct PlayMessage : LogServer::LogMessage {
 	inline virtual void write() override {
 		std::cout << "[PLAY] " << m_msg << std::endl;
 	}
-};  // end struct Authmessage
+};  // end struct playmessage
 
 using play = PlayMessage;
 
@@ -28,11 +29,22 @@ PlayModule::PlayModule(AuthModule* auth, DataModule* data,
 	  m_db(db),
 	  logServer(*ls),
 	  m_mmr(std::move(std::make_unique<MMRQueue>(*this))),
-	  m_mmrThread([this](){ m_mmr->run(); }) {
-// this constructor spawns a new thread for the matchmaking queue
-logServer.log<dbg>("Started MMR thread with id ", m_mmrThread.get_id());
-m_mmrThread.detach();
-}
+	  m_mmrThread([this]() { m_mmr->run(); }),
+	  m_tableServer(std::move(std::make_unique<TableServer>(*this))),
+	  m_tableThread([this]() { m_tableServer->run(); }) {
+	// this constructor spawns a new thread for the matchmaking queue
+	logServer.log<dbg>("Started MMR thread with id ", m_mmrThread.get_id());
+	m_mmrThread.detach();
+	logServer.log<dbg>("Started Table server thread with id ",
+					   m_tableThread.get_id());
+	m_tableThread.detach();
+} // end constructor
+
+void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
+								  const GameServer::ConnectionId p2) {
+	// this function must be thread safe; gets called from MMRQueue
+	m_tableServer->enqueueMatch(p1, p2);
+}  // end startPlayModeFor
 
 void PlayModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	using namespace msg;
