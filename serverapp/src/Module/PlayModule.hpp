@@ -6,6 +6,7 @@
 #include "GameServer.hpp"
 #include "Module/AuthModule.hpp"
 #include "Module/DataModule.hpp"
+#include <thread>
 
 class MMRQueue;
 
@@ -31,6 +32,7 @@ private:
 	GameServer::LogServer_type& logServer;
 
 	std::unique_ptr<MMRQueue> m_mmr;
+std::thread m_mmrThread;
 };
 
 #endif

@@ -27,7 +27,12 @@ PlayModule::PlayModule(AuthModule* auth, DataModule* data,
 	  m_data(data),
 	  m_db(db),
 	  logServer(*ls),
-	  m_mmr(std::move(std::make_unique<MMRQueue>())) {}
+	  m_mmr(std::move(std::make_unique<MMRQueue>())),
+	  m_mmrThread([this](){ m_mmr->run(); }) {
+// this constructor spawns a new thread for the matchmaking queue
+logServer.log<dbg>("Started MMR thread with id ", m_mmrThread.get_id());
+m_mmrThread.detach();
+}
 
 void PlayModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	using namespace msg;

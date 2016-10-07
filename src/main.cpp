@@ -14,12 +14,13 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	// WebSocket (WS)-server at port 8080 using 4 threads
+// WebSocket (WS)-server at port 8080 using 4 threads
 	unsigned short port = 8080;
 	auto threads = 4u;
 	WSServer server{port, threads};
 	auto logServer = LogServer{true};
 	logServer.log<Log::net>("Logging started");
+	logServer.log<Log::dbg>("Main thread running with id ", std::this_thread::get_id());
 
 	auto gameServer = std::make_unique<GameServer>(server, logServer);
 	auto authModule = std::make_unique<AuthModule>(gameServer->getDB(),
@@ -45,6 +46,7 @@ int main(int argc, char** argv) {
 	// gameServer->getLogServer());
 
 	thread log_thread([&logServer]() { logServer.start(); });
+	logServer.log<Log::dbg>("Log server thread started with id ", log_thread.get_id());
 
 	thread server_thread([&server, &logServer, port, threads]() {
 		// Start WS-server
@@ -52,6 +54,8 @@ int main(int argc, char** argv) {
 								"with ", threads, "threads");
 		server.start();
 	});
+			logServer.log<Log::dbg>("Startet Websock server thread with id ", server_thread.get_id());
+
 
 	gameServer->start();
 
