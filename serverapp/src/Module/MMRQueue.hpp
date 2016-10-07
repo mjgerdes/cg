@@ -21,6 +21,7 @@ public:
 	};  // end MMRQueueElement
 
 public:
+	MMRQueue();
 	void run();
 	void enqueue(IncomingElement e);
 
@@ -29,8 +30,12 @@ public:
 private:
 	void internalEnqueue(const IncomingElement& e);
 	void tryMatch();
+	void increaseWaitTime();
 	void match(GameServer::ConnectionId p1, GameServer::ConnectionId p2);
+
 private:
+	WaitTime_type m_waitTimeStep;
+
 	Concurrent::Queue<IncomingElement> m_incoming;
 	std::vector<MMRQueueElement> m_mmrqueue;
 };  // end MMRQueue
