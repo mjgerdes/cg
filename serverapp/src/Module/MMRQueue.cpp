@@ -36,15 +36,18 @@ void MMRQueue::tryMatch() {
 	auto i = m_mmrqueue.begin();
 	for (auto j = m_mmrqueue.begin() + 1; j < m_mmrqueue.end(); ++j) {
 		auto rankDiff = abs((int)i->rank - (int)j->rank);
-		if ((rankDiff ^ 2) <= ((i->waitTime + j->waitTime) / 2)) {
+		auto waitAverage = ((i->waitTime + j->waitTime) / 2);
+
+		if ((rankDiff * rankDiff) <= waitAverage) {
+			std::cout << "Found match\n";
 			match(i->connection, j->connection);
 			m_mmrqueue.erase(j);
 			// j and all iterators > j are now invalidated, luckily i is smaller
 			m_mmrqueue.erase(i);
-			handleQueueElements();
 			return;
 		}
 	}
+	handleQueueElements();
 }  // end tryMatch
 
 void MMRQueue::handleQueueElements() {
@@ -55,7 +58,8 @@ void MMRQueue::handleQueueElements() {
 		i->waitTime +=
 			m_waitTimeStep;  // this can wrap around after a while but oh well
 		// FIXME: race condition on m_auth
-		if (m_parent.m_auth->connectionStatusOf(i->connection) == AuthModule::unauthed) {
+		if (m_parent.m_auth->connectionStatusOf(i->connection) ==
+			AuthModule::unauthed) {
 			// if someone has become unauthed while waiting in queue
 			// (disconnect), kick him out
 			m_mmrqueue.erase(i);

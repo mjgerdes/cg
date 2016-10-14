@@ -46,6 +46,7 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 								  const GameServer::ConnectionId p2) {
 	// this function must be thread safe; gets called from MMRQueue
 	// FIXME: it's not
+	logServer.log<play>("Starting a playmode...");
 	auto maybeConnectionp1 = m_auth->reverseLookup(p1);
 	auto maybeConnectionp2 = m_auth->reverseLookup(p2);
 

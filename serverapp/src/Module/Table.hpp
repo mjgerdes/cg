@@ -33,6 +33,8 @@ private:
 
 	msg::Table m_model;
 	CardIdMap_type m_cardMap;
+
+	// FIXME: need to change these to weak_ptr or we will be leaking memory/holding the connection handles forever or until they get replaced
 	WSConnection m_player1;
 	WSConnection m_player2;
 

@@ -32,13 +32,13 @@ void TableServer::enqueueMatch(WSConnection p1, WSConnection p2) {
 void TableServer::run() {
 	while (true) {
 		// check if we have to create a new table
-		if (!m_incomingMatches.empty()) {
+//		if (!m_incomingMatches.empty()) {
 			auto ps = m_incomingMatches.pop();
 			createTable(ps.first, ps.second);
-		}
+//		}
 
 		// check if anything needs to be done for the tables running
-		serveTables();
+//		serveTables();
 	}  // end while
 }  // end run
 
