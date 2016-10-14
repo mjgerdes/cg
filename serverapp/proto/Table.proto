@@ -1,0 +1,25 @@
+
+syntax="proto2";
+package msg;
+import "CardData.proto";
+import "SystemData.proto";
+import "HullData.proto";
+
+
+message SystemCards {
+repeated data.CardData.CardId card_id = 1;
+}
+
+message Table {
+optional int32 unsafe_id = 9;
+  optional data.HullData.HullId player1_hull_id = 1;
+    optional data.HullData.HullId player2_hull_id = 2;
+  repeated data.SystemData.SystemId player1_system_ids = 3;
+    repeated data.SystemData.SystemId player2_system_ids = 4;
+  repeated SystemCards player1_system_cards = 5	;
+    repeated SystemCards player2_system_cards = 6;
+	repeated int32 player1_hand = 7;
+		repeated int32 player2_hand = 8;
+
+}
+
