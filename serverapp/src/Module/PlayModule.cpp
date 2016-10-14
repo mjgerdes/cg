@@ -8,6 +8,7 @@
 #include "Player_odb.h"
 #include "Module/MMRQueue.hpp"
 #include "Module/TableServer.hpp"
+#include "Module/Table.hpp"
 
 using namespace Log;
 using namespace Utility;
@@ -30,7 +31,8 @@ PlayModule::PlayModule(AuthModule* auth, DataModule* data,
 	  logServer(*ls),
 	  m_mmr(std::move(std::make_unique<MMRQueue>(*this))),
 	  m_mmrThread([this]() { m_mmr->run(); }),
-	  m_tableServer(std::move(std::make_unique<TableServer>(*this, m_auth, m_data, m_db, logServer))),
+	  m_tableServer(std::move(std::make_unique<TableServer>(
+		  *this, m_auth, m_data, m_db, logServer))),
 	  m_tableThread([this]() { m_tableServer->run(); }) {
 	// this constructor spawns a new thread for the matchmaking queue
 	logServer.log<dbg>("Started MMR thread with id ", m_mmrThread.get_id());
@@ -47,20 +49,32 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 	auto maybeConnectionp1 = m_auth->reverseLookup(p1);
 	auto maybeConnectionp2 = m_auth->reverseLookup(p2);
 
-// check for disconnect that might have slipped through
-	if(!maybeConnectionp1) {
-// FIXME: put the p2 back into queue
+	// check for disconnect that might have slipped through
+	if (!maybeConnectionp1) {
+		// FIXME: put the p2 back into queue
 		return;
 	}
 
-	if(!maybeConnectionp2) {
+	if (!maybeConnectionp2) {
 		// same
 		return;
 	}
 
-	
 	m_tableServer->enqueueMatch(*maybeConnectionp1, *maybeConnectionp2);
 }  // end startPlayModeFor
+
+void PlayModule::sendTable(const Table& table, WSConnection player1,
+						   WSConnection player2) {
+	logServer.log<play>("Sending out table information to (Player1:",
+						connectionString(player1), ", Player2: ",
+						connectionString(player2));
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::TableType);
+	//	msg->mutable_table()->set_token(token);
+	*(msg->mutable_table()) = table.raw();
+	sendMessage(msg, player1);
+	sendMessage(msg, player2);
+}  // end sendTable
 
 void PlayModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
 	using namespace msg;

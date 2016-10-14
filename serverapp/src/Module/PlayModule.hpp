@@ -10,19 +10,22 @@
 
 class MMRQueue;
 class TableServer;
+class Table;
 
 class PlayModule : public GameServer::StandardModule {
-public:
-
-	
 public:
 	PlayModule(AuthModule* auth, DataModule* data,
 			   GameServer::Database_type* db, GameServer::LogServer_type* ls);
 
-	void startPlayModeFor(const GameServer::ConnectionId p1, const GameServer::ConnectionId p2);
-	
-// thanks unique_ptr
+	void startPlayModeFor(const GameServer::ConnectionId p1,
+						  const GameServer::ConnectionId p2);
+
+	void sendTable(const Table& table, WSConnection player1,
+				   WSConnection player2);
+
+	// thanks unique_ptr
 	~PlayModule();
+
 private:
 	void onPlayInitiationRequest(const msg::PlayInitiationRequest* msg,
 								 WSConnection source);
@@ -35,9 +38,9 @@ private:
 	GameServer::Database_type* m_db;
 	GameServer::LogServer_type& logServer;
 
-friend class MMRQueue;
+	friend class MMRQueue;
 	std::unique_ptr<MMRQueue> m_mmr;
-std::thread m_mmrThread;
+	std::thread m_mmrThread;
 
 	friend class TableServer;
 	std::unique_ptr<TableServer> m_tableServer;

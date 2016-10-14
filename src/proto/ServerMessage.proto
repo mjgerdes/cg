@@ -4,6 +4,8 @@ package msg;
 import "LoginResponse.proto";
 import "RegistrationResponse.proto";
 import "DataModuleMessages.proto";
+import "Table.proto";
+
 
 message ServerMessage {
   enum ServerMessageType { LoginResponseType = 1; RegistrationResponseType = 2;
@@ -12,7 +14,9 @@ message ServerMessage {
   SystemCollectionResponseType = 5;
   LoginTokenInvalidResponseType = 6;
 HullCollectionResponseType = 7;
+  TableType = 8;
   };
+
   required ServerMessageType msgType = 1;
   optional LoginResponse loginresponse = 2;
   optional RegistrationResponse registrationresponse = 3;
@@ -21,4 +25,5 @@ HullCollectionResponseType = 7;
   optional SystemCollectionResponse system_collection_response = 6;
   optional LoginTokenInvalidResponse login_token_invalid_response = 7;
   optional HullCollectionResponse hull_collection_response = 8;
+  optional Table table = 9;
 }

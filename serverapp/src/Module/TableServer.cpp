@@ -51,8 +51,8 @@ void TableServer::createTable(const WSConnection p1, const WSConnection p2) {
 		return;  // arghhhg!!11
 	}
 
-	// FIXME:  send messages to players
-}
+m_parent.sendTable(table, p1, p2);
+} // end createTable
 
 bool TableServer::fillModel(Table_type* table, const WSConnection p1Connection,
 							const WSConnection p2Connection) {
@@ -114,7 +114,7 @@ bool TableServer::fillModel(Table_type* table, const WSConnection p1Connection,
 			table->associate(obfuscatedCardId, cardId);
 			sysCards->add_obfuscated_card_id(obfuscatedCardId);
 		}
-} // end for
+	}  // end for
 
 	for (const auto& p2sys : p1Systems) {
 		model.add_player2_system_ids(p2sys->system());
@@ -133,10 +133,7 @@ bool TableServer::fillModel(Table_type* table, const WSConnection p1Connection,
 			table->associate(obfuscatedCardId, cardId);
 			sysCards->add_obfuscated_card_id(obfuscatedCardId);
 		}
-} // end for
-
-
-
+	}  // end for
 
 	return true;
 }  // end fillModel

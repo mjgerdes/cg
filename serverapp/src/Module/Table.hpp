@@ -25,6 +25,8 @@ public:
 	void associate(short obfuscated, Card::Id_type real);
 	~Table();
 
+	inline const msg::Table& raw() const { return m_model; }
+
 private:
 	friend class TableServer;
 	static DataModule* data;
