@@ -7,7 +7,7 @@ import "HullData.proto";
 
 
 message SystemCards {
-repeated data.CardData.CardId card_id = 1;
+repeated int32 obfuscated_card_id = 1;
 }
 
 message Table {

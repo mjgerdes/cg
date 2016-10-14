@@ -12,15 +12,18 @@ public:
 
 	template <typename container_T>
 	void shuffle(container_T* container) {
-std::shuffle(container->begin(), container->end(), this->m_mt);
+		std::shuffle(container->begin(), container->end(), this->m_mt);
 	}
 
-inline auto getUniqueSequenceGenerator() {
-std::vector<short> v = m_range;
-shuffle(&v);
-return [u = std::move(v)]() mutable { return u.pop_back(); };
-}
-
+	inline auto getUniqueSequenceGenerator() {
+		std::vector<short> u = m_range;
+		shuffle(&u);
+return [v = std::move(u)]() mutable {
+			auto i = v.back();
+			v.pop_back();
+			return i;
+		};
+	}
 
 	~RandomProvider();
 

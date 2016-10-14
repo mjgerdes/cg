@@ -16,7 +16,12 @@
 TableServer::TableServer(PlayModule& parent, AuthModule* auth, DataModule* data,
 						 GameServer::Database_type* db,
 						 GameServer::LogServer_type& ls)
-	: m_parent(parent), m_auth(auth), m_data(data), m_db(db), logServer(ls), m_rand(std::move(std::make_unique<RandomProvider>())) {
+	: m_parent(parent),
+	  m_auth(auth),
+	  m_data(data),
+	  m_db(db),
+	  logServer(ls),
+	  m_rand(std::move(std::make_unique<RandomProvider>())) {
 	Table_type::setDataProvider(*m_data);
 }
 
@@ -84,13 +89,54 @@ bool TableServer::fillModel(Table_type* table, const WSConnection p1Connection,
 	const auto p1Systems = p1Ship->systemPlans();
 	const auto p2Systems = p2Ship->systemPlans();
 
-	for (const auto& p1sys : p1Systems) {
-		table->m_model.add_player1_system_ids(p1sys->system());
-	}
+	// we need some unique random numbers for both players
+	auto r = m_rand->getUniqueSequenceGenerator();
 
-	for (const auto& p2sys : p2Systems) {
-		table->m_model.add_player2_system_ids(p2sys->system());
-	}
+	// shorthand for convenience
+	auto model = table->m_model;
+
+	// add systems, fill in systems with cards, obfuscate the cards randomly and
+	// memorize the obfuscation
+	for (const auto& p1sys : p1Systems) {
+		model.add_player1_system_ids(p1sys->system());
+
+		// pointer to the new container of the newly added systems's cards
+		// (still empty)
+		auto sysCards = model.add_player1_system_cards();
+		// need to get the cards to add to this system and shuffle them,
+		// unfortunately we hav to copy here
+		auto newCards = p1sys->cards();
+		m_rand->shuffle(&newCards);
+
+		// add them one by one to the sysCards container
+		for (const auto cardId : newCards) {
+			auto obfuscatedCardId = r();
+			table->associate(obfuscatedCardId, cardId);
+			sysCards->add_obfuscated_card_id(obfuscatedCardId);
+		}
+} // end for
+
+	for (const auto& p2sys : p1Systems) {
+		model.add_player2_system_ids(p2sys->system());
+
+		// pointer to the new container of the newly added systems's cards
+		// (still empty)
+		auto sysCards = model.add_player2_system_cards();
+		// need to get the cards to add to this system and shuffle them,
+		// unfortunately we hav to copy here
+		auto newCards = p2sys->cards();
+		m_rand->shuffle(&newCards);
+
+		// add them one by one to the sysCards container
+		for (const auto cardId : newCards) {
+			auto obfuscatedCardId = r();
+			table->associate(obfuscatedCardId, cardId);
+			sysCards->add_obfuscated_card_id(obfuscatedCardId);
+		}
+} // end for
+
+
+
 
 	return true;
 }  // end fillModel
