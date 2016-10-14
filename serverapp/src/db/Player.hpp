@@ -23,6 +23,7 @@ public:
 	using CardContainer_type = std::vector<Card::Id_type>;
 	using SystemContainer_type = std::vector<System::Id_type>;
 	using HullContainer_type = std::vector<Hull::Id_type>;
+	using ShipPlanCollection_type = std::vector<std::shared_ptr<ShipPlan>>;
 
 public:
 	Player(Id_type newId) : m_id(newId) {}
@@ -51,6 +52,10 @@ public:
 		m_systemPlanCollection.push_back(plan);
 	}
 
+	inline const ShipPlanCollection_type& getShipPlans() {
+		return m_shipPlanCollection;
+	}
+
 private:
 	friend class odb::access;
 
@@ -73,7 +78,7 @@ private:
 #pragma db value_not_null
 	std::vector<std::shared_ptr<db::SystemPlan>> m_systemPlanCollection;
 #pragma db value_not_null
-	std::vector<std::shared_ptr<ShipPlan>> m_shipPlanCollection;
+	ShipPlanCollection_type m_shipPlanCollection;
 
 	void init(odb::callback_event e, odb::database& db);
 
