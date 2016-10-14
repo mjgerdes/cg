@@ -30,7 +30,7 @@ PlayModule::PlayModule(AuthModule* auth, DataModule* data,
 	  logServer(*ls),
 	  m_mmr(std::move(std::make_unique<MMRQueue>(*this))),
 	  m_mmrThread([this]() { m_mmr->run(); }),
-	  m_tableServer(std::move(std::make_unique<TableServer>(*this))),
+	  m_tableServer(std::move(std::make_unique<TableServer>(*this, m_auth, m_data, m_db, logServer))),
 	  m_tableThread([this]() { m_tableServer->run(); }) {
 	// this constructor spawns a new thread for the matchmaking queue
 	logServer.log<dbg>("Started MMR thread with id ", m_mmrThread.get_id());
@@ -38,12 +38,28 @@ PlayModule::PlayModule(AuthModule* auth, DataModule* data,
 	logServer.log<dbg>("Started Table server thread with id ",
 					   m_tableThread.get_id());
 	m_tableThread.detach();
-} // end constructor
+}  // end constructor
 
 void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 								  const GameServer::ConnectionId p2) {
 	// this function must be thread safe; gets called from MMRQueue
-	m_tableServer->enqueueMatch(p1, p2);
+	// FIXME: it's not
+	auto maybeConnectionp1 = m_auth->reverseLookup(p1);
+	auto maybeConnectionp2 = m_auth->reverseLookup(p2);
+
+// check for disconnect that might have slipped through
+	if(!maybeConnectionp1) {
+// FIXME: put the p2 back into queue
+		return;
+	}
+
+	if(!maybeConnectionp2) {
+		// same
+		return;
+	}
+
+	
+	m_tableServer->enqueueMatch(*maybeConnectionp1, *maybeConnectionp2);
 }  // end startPlayModeFor
 
 void PlayModule::bindHandlersImp(MessageDispatcher_type* dispatcher) {
