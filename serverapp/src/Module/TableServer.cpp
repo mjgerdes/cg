@@ -93,7 +93,7 @@ bool TableServer::fillModel(Table_type* table, const WSConnection p1Connection,
 	auto r = m_rand->getUniqueSequenceGenerator();
 
 	// shorthand for convenience
-	auto model = table->m_model;
+	auto& model = table->m_model;
 
 	// add systems, fill in systems with cards, obfuscate the cards randomly and
 	// memorize the obfuscation

@@ -39,7 +39,6 @@ void MMRQueue::tryMatch() {
 		auto waitAverage = ((i->waitTime + j->waitTime) / 2);
 
 		if ((rankDiff * rankDiff) <= waitAverage) {
-			std::cout << "Found match\n";
 			match(i->connection, j->connection);
 			m_mmrqueue.erase(j);
 			// j and all iterators > j are now invalidated, luckily i is smaller
