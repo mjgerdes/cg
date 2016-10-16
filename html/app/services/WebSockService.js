@@ -45,7 +45,7 @@ var msg = new ClientMessage({
 		};
 
 ws.onclose = function(e) {
-//console.log("Websock close: " ,e);
+console.log("Websock close: " ,e);
 }
 
 ws.onerror = function(e) {
@@ -53,14 +53,20 @@ ws.onerror = function(e) {
 	}
 
   ws.onmessage = function(evt) {
-//    try {
+    try {
         // Decode the Message
 var bytebuffer = dcodeIO.ByteBuffer;
 var bb = new bytebuffer();
-	  bb = bytebuffer.wrap(evt.data, "utf8");
+	  bb = bytebuffer.wrap(evt.data); //, "utf8");
         var msg = ServerMessage.decode(bb);
+//		console.log(evt.toSource());
+
+//        var msg = ServerMessage.decode(evt.data);
+//	  console.log(msg.msgType);
+//	  alert(msg.msgType);
 		$rootScope.$apply(function() {handlers[msg.msgType](msg)});
-//    } catch (err) {
-//    }
+    } catch (err) {
+		console.log(err.toSource());
+   }
 };
 });

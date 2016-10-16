@@ -8,6 +8,7 @@ ProtoBuf.loadProtoFile("proto/ServerMessage.proto", Builder);
 ProtoBuf.loadProtoFile("proto/RegistrationResponse.proto", Builder);
 ProtoBuf.loadProtoFile("proto/LoginResponse.proto", Builder);
 ProtoBuf.loadProtoFile("proto/DataModuleMessages.proto", Builder);
+ProtoBuf.loadProtoFile("proto/Table.proto", Builder);
 
 var Message = Builder.build("msg");
 var ClientMessage = Message.ClientMessage;

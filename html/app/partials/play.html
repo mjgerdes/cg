@@ -1,2 +1,9 @@
 
-A Game! How kind of you to join me!
+<div ng-show="tableReadyp" >
+<h1 class="h1"> Enemy</h1>
+<div ng-repeat="x in enemySystems track by $index"><cg-system system="x" health="x.health" cards="x.capacity"></cg-system></div>
+
+<h1 class="h1">You</h1>
+</div>
+
+
