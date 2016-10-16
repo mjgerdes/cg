@@ -75,7 +75,8 @@ public:
 		*msg << fullString;
 		log<dbg>("Raw message to ", Utility::connectionString(reciever), "\n",
 				 fullString);
-		server.send(reciever, std::move(msg));
+		// 130 is the fin opcode that signifies a websock protocol fragment in binary form. This is very important to the reciever, choosing 129 (fragment/text) will will randomly crash firefox etc.
+		server.send(reciever, std::move(msg), nullptr, 130);
 	}
 
 	void sendMessage(const GameServer::StandardSendMessage& msg, WSConnection& destination);
