@@ -30,6 +30,7 @@ private:
 	void onPlayInitiationRequest(const msg::PlayInitiationRequest* msg,
 								 WSConnection source);
 
+	void sendTableStartMessage(WSConnection& p1, WSConnection& p2);
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 private:

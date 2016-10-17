@@ -61,8 +61,24 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 		return;
 	}
 
+	sendTableStartMessage(*maybeConnectionp1, *maybeConnectionp2);
 	m_tableServer->enqueueMatch(*maybeConnectionp1, *maybeConnectionp2);
 }  // end startPlayModeFor
+
+void PlayModule::sendTableStartMessage(WSConnection& p1, WSConnection& p2) {
+	auto msg1 = makeServerMessage();
+	auto msg2 = makeServerMessage();
+	msg1->set_msgtype(msg::ServerMessage::TableStartMessageType);
+	msg2->set_msgtype(msg::ServerMessage::TableStartMessageType);
+
+	msg1->mutable_table_start_message()->set_my_player_number(1);
+	msg1->mutable_table_start_message()->set_enemy_name("");
+	msg2->mutable_table_start_message()->set_my_player_number(2);
+	msg2->mutable_table_start_message()->set_enemy_name("");
+
+	sendMessage(msg1, p1);
+	sendMessage(msg2, p2);
+}
 
 void PlayModule::sendTable(const Table& table, WSConnection player1,
 						   WSConnection player2) {

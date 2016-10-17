@@ -4,6 +4,7 @@ package msg;
 import "LoginResponse.proto";
 import "RegistrationResponse.proto";
 import "DataModuleMessages.proto";
+import "PlayModuleMessages.proto";
 import "Table.proto";
 
 
@@ -15,6 +16,7 @@ message ServerMessage {
   LoginTokenInvalidResponseType = 6;
 HullCollectionResponseType = 7;
   TableType = 8;
+  TableStartMessageType = 9;
   };
 
   required ServerMessageType msgType = 1;
@@ -26,4 +28,5 @@ HullCollectionResponseType = 7;
   optional LoginTokenInvalidResponse login_token_invalid_response = 7;
   optional HullCollectionResponse hull_collection_response = 8;
   optional Table table = 9;
+  optional TableStartMessage table_start_message = 10;
 }

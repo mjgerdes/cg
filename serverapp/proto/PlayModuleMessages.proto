@@ -12,3 +12,8 @@ message PlayInitiationRequest {
 message PlayInitiationResponse {
 
 }
+
+message TableStartMessage {
+  optional int32 my_player_number = 1;
+  optional string enemy_name = 2;
+}
