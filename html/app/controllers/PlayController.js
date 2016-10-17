@@ -20,13 +20,27 @@ $scope.tableReadyp = false;
 
 
 
+WebSockService.registerHandler(ServerMessageTypes.TableStartMessageType, function(msg) {
+	$scope.myPlayerNumber = msg.table_start_message.my_player_number;
+});
+
 WebSockService.registerHandler(ServerMessageTypes.TableType, function(msg) {
 $scope.tableReadyp = true;
 //$scope.model = msg.table;
-//	alert(msg.table.player2_system_ids);
+
 	console.log(msg.table.toSource());
 
+if( $scope.myPlayerNumber === 1) {
+	// we are player 1
 	$scope.enemySystems = getSystemsForIds(CardDataService, msg.table.player2_system_ids);
+	$scope.playerSystems = getSystemsForIds(CardDataService, msg.table.player1_system_ids);
+	} else {
+		// we are player 2
+			$scope.enemySystems = getSystemsForIds(CardDataService, msg.table.player1_system_ids);
+	$scope.playerSystems = getSystemsForIds(CardDataService, msg.table.player2_system_ids);
+		}
+
+	
 	});
 
 // remember me
