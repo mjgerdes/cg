@@ -12,6 +12,7 @@
 #include "HullProvider.hpp"
 #include "db/ShipPlan.hpp"
 
+
 // constructor
 TableServer::TableServer(PlayModule& parent, AuthModule* auth, DataModule* data,
 						 GameServer::Database_type* db,
@@ -134,6 +135,36 @@ bool TableServer::fillModel(Table_type* table, const WSConnection p1Connection,
 			sysCards->add_obfuscated_card_id(obfuscatedCardId);
 		}
 	}  // end for
+
+
+// give starting hand
+using C = data::CardData;
+// player1
+for(auto i : {1, 2, 3}) {
+++i; // supress warning, we just want to do this 3 times FIXME: refactor, write doTimes function, lambdas etc
+auto obfusCycle = r();
+table->associate(obfusCycle, C::universal_power_cycle);
+model.add_player1_hand(obfusCycle);
+}
+//only once
+auto obfusEngage = r();
+table->associate(obfusEngage, C::universal_engage);
+model.add_player1_hand(obfusEngage);
+
+
+
+// player2
+// gets one more power cycle
+for(auto i : {1, 2, 3, 4}) {
+++i; // supress warning, we just want to do this 3 times FIXME: refactor, write doTimes function, lambdas etc
+auto obfusCycle = r();
+table->associate(obfusCycle, C::universal_power_cycle);
+model.add_player2_hand(obfusCycle);
+}
+//only once
+obfusEngage = r();
+table->associate(obfusEngage, C::universal_engage);
+model.add_player2_hand(obfusEngage);
 
 	return true;
 }  // end fillModel

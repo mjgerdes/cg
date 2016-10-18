@@ -45,7 +45,6 @@ enum CardId {
   basic_target_vector = 10;
   basic_revolver_missile = 11;
   basic_space_marine = 12;
-basic_mercenary = 23;
 basic_stackoverflow = 13;
 basic_disassemble = 14;
 basic_programmer = 15;
@@ -56,12 +55,13 @@ basic_irradiate = 19;
 basic_lab_assistant = 20;
 basic_red = 21;
 basic_metal_plate = 22;
-basic_signal_beacon = 27;
+basic_signal_beacon = 23;
 basic_repair_droid = 24;
 basic_hangar_crew = 25;
 basic_well_stocked = 26;
 universal_engage = 27;
 universal_power_cycle = 28;
+basic_mercenary = 29;
   };
 
   enum SMSType { none = 0; science = 1; military = 2; support = 3;};
