@@ -96,8 +96,12 @@ void PlayModule::sendTable(const Table& table, WSConnection player1,
 						connectionString(player2));
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::TableType);
-	//	msg->mutable_table()->set_token(token);
 	*(msg->mutable_table()) = table.raw();
+
+	//first we send the obfuscation table to interpret the card ids
+
+
+// actually send the table model
 	sendMessage(msg, player1);
 	sendMessage(msg, player2);
 }  // end sendTable

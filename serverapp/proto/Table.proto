@@ -5,8 +5,6 @@ import "CardData.proto";
 import "SystemData.proto";
 import "HullData.proto";
 
-
-
 message ObfuscationTableEntry {
 optional int32 obfuscated = 1;
 optional int32 real = 2;
@@ -31,6 +29,12 @@ optional int32 unsafe_id = 9;
     repeated SystemCards player2_system_cards = 6;
 	repeated int32 player1_hand = 7;
 		repeated int32 player2_hand = 8;
+	repeated int32 player1_space_cards = 10;
+	repeated int32 player2_space_cards = 11;
+	repeated int32 player1_crew_cards = 12;
+	repeated int32 player2_crew_cards = 13;
+
+
 
 }
 

@@ -23,13 +23,69 @@ public:
 
 	void initialize(int id);
 	void associate(short obfuscated, Card::Id_type real);
-		msg::ObfuscationTableMessage obfuscationTableMessage() const;
+	msg::ObfuscationTableMessage obfuscationTableMessage() const;
+	msg::ObfuscationTableMessage player1ObfuscationTableMessage() const;
+		msg::ObfuscationTableMessage player2ObfuscationTableMessage() const; 
 	~Table();
 
 	inline const msg::Table& raw() const { return m_model; }
 
-private:
+public:
+	// templates
+	template <typename T, typename F>
+	T foldPlayer1Cards(T identity, F f) const {
+		auto acc = identity;
+		for (int i = 0; i < m_model.player1_hand_size(); ++i) {
+			acc = f(acc, m_model.player1_hand(i));
+		}
 
+		//cards in systems
+		for(int i = 0; i < m_model.player1_system_cards_size(); ++i) {
+			for(int j = 0; j < m_model.player1_system_cards(i).obfuscated_card_id_size(); ++j) {
+				acc = f(acc, m_model.player1_system_cards(i).obfuscated_card_id(j));
+			}
+		}
+
+		// crew cards
+		for(int i = 0; i < m_model.player1_crew_cards_size(); ++i) {
+			acc = f(acc, m_model.player1_crew_cards(i));
+		}
+
+		// space cards
+		for(int i = 0; i < m_model.player1_space_cards_size(); ++i) {
+			acc = f(acc, m_model.player1_space_cards(i));
+		}
+
+		return acc;
+	}  // end foldPlayer1Cards
+
+
+	template <typename T, typename F>
+	T foldPlayer2Cards(T identity, F f) const {
+		auto acc = identity;
+		for (int i = 0; i < m_model.player2_hand_size(); ++i) {
+			acc = f(acc, m_model.player2_hand(i));
+		}
+
+		//cards in systems
+		for(int i = 0; i < m_model.player2_system_cards_size(); ++i) {
+			for(int j = 0; j < m_model.player2_system_cards(i).obfuscated_card_id_size(); ++j) {
+				acc = f(acc, m_model.player2_system_cards(i).obfuscated_card_id(j));
+			}
+		}
+
+		// crew cards
+		for(int i = 0; i < m_model.player2_crew_cards_size(); ++i) {
+			acc = f(acc, m_model.player2_crew_cards(i));
+		}
+
+		// space cards
+		for(int i = 0; i < m_model.player2_space_cards_size(); ++i) {
+			acc = f(acc, m_model.player2_space_cards(i));
+		}
+
+		return acc;
+	}  // end foldPlayer2Cards
 
 private:
 	friend class TableServer;
