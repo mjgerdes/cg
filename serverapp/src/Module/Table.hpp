@@ -26,12 +26,33 @@ public:
 	msg::ObfuscationTableMessage obfuscationTableMessage() const;
 	msg::ObfuscationTableMessage player1ObfuscationTableMessage() const;
 		msg::ObfuscationTableMessage player2ObfuscationTableMessage() const; 
+	msg::ObfuscationTableMessage player1HandObfuscationTableMessage() const;
+	msg::ObfuscationTableMessage player2HandObfuscationTableMessage() const;
 	~Table();
 
 	inline const msg::Table& raw() const { return m_model; }
 
 public:
 	// templates
+
+	template <typename T, typename F>
+	T foldPlayer1HandCards(T identity, F f) const {
+		auto acc = identity;
+				for (int i = 0; i < m_model.player1_hand_size(); ++i) {
+			acc = f(acc, m_model.player1_hand(i));
+		}
+				return acc;
+	} // end foldPlayer1HandCards
+
+	template <typename T, typename F>
+	T foldPlayer2HandCards(T identity, F f) const {
+		auto acc = identity;
+				for (int i = 0; i < m_model.player2_hand_size(); ++i) {
+			acc = f(acc, m_model.player2_hand(i));
+		}
+				return acc;
+	} // end foldPlayer2HandCards
+	
 	template <typename T, typename F>
 	T foldPlayer1Cards(T identity, F f) const {
 		auto acc = identity;

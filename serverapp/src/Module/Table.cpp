@@ -39,6 +39,28 @@ msg::ObfuscationTableMessage Table::player1ObfuscationTableMessage() const {
 }
 
 
+
+msg::ObfuscationTableMessage Table::player1HandObfuscationTableMessage() const {
+	return this->foldPlayer1HandCards(
+		msg::ObfuscationTableMessage{}, [this](auto& msg, auto obfuscatedId) {
+			auto entry = msg.add_obfuscation_table_entry();
+			entry->set_obfuscated(obfuscatedId);
+			entry->set_real(this->m_cardMap.at(obfuscatedId));
+			return std::move(msg);
+		});
+}
+
+msg::ObfuscationTableMessage Table::player2HandObfuscationTableMessage() const {
+	return this->foldPlayer2HandCards(
+		msg::ObfuscationTableMessage{}, [this](auto& msg, auto obfuscatedId) {
+			auto entry = msg.add_obfuscation_table_entry();
+			entry->set_obfuscated(obfuscatedId);
+			entry->set_real(this->m_cardMap.at(obfuscatedId));
+			return std::move(msg);
+		});
+}
+
+
 msg::ObfuscationTableMessage Table::player2ObfuscationTableMessage() const {
 	return this->foldPlayer2Cards(
 		msg::ObfuscationTableMessage{}, [this](auto& msg, auto obfuscatedId) {

@@ -31,7 +31,7 @@ private:
 								 WSConnection source);
 
 	void sendTableStartMessage(WSConnection& p1, WSConnection& p2) const;
-	void sendObfuscationTableMessage(const Table& table,
+	void sendObfuscationTableMessage(const msg::ObfuscationTableMessage& obfuscationTable,
 									 WSConnection destination) const;
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 

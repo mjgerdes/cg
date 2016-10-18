@@ -65,12 +65,12 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 	m_tableServer->enqueueMatch(*maybeConnectionp1, *maybeConnectionp2);
 }  // end startPlayModeFor
 
-void PlayModule::sendObfuscationTableMessage(const Table& table,
+void PlayModule::sendObfuscationTableMessage(const msg::ObfuscationTableMessage& obfuscationTable,
 											 WSConnection destination) const {
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::ObfuscationTableMessageType);
-	*(msg->mutable_obfuscation_table_message()) =
-		table.obfuscationTableMessage();
+	*(msg->mutable_obfuscation_table_message()) = obfuscationTable;
+
 	sendMessage(msg, destination);
 }  // end sendObfuscationTableMessage
 
@@ -98,8 +98,10 @@ void PlayModule::sendTable(const Table& table, WSConnection player1,
 	msg->set_msgtype(msg::ServerMessage::TableType);
 	*(msg->mutable_table()) = table.raw();
 
-	//first we send the obfuscation table to interpret the card ids
 
+// sned obfuscation table - at the start we only want people to know their hands
+	sendObfuscationTableMessage(table.player1HandObfuscationTableMessage(), player1);
+	sendObfuscationTableMessage(table.player2HandObfuscationTableMessage(), player2);
 
 // actually send the table model
 	sendMessage(msg, player1);
