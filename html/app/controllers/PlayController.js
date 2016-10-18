@@ -38,6 +38,7 @@ if( $scope.myPlayerNumber === 1) {
 		// we are player 2
 			$scope.enemySystems = getSystemsForIds(CardDataService, msg.table.player1_system_ids);
 	$scope.playerSystems = getSystemsForIds(CardDataService, msg.table.player2_system_ids);
+		$scope.playerHand = getCardsForIds(CardDataProvider, msg.player2_hand);
 		}
 
 	

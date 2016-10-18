@@ -6,6 +6,17 @@ import "SystemData.proto";
 import "HullData.proto";
 
 
+
+message ObfuscationTableEntry {
+optional int32 obfuscated = 1;
+optional int32 real = 2;
+}
+
+message ObfuscationTableMessage {
+repeated ObfuscationTableEntry obfuscation_table_entry = 1;
+}
+  
+
 message SystemCards {
 repeated int32 obfuscated_card_id = 1;
 }

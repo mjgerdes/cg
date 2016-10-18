@@ -17,6 +17,7 @@ message ServerMessage {
 HullCollectionResponseType = 7;
   TableType = 8;
   TableStartMessageType = 9;
+  ObfuscationTableMessageType = 10;
   };
 
   required ServerMessageType msgType = 1;
@@ -29,4 +30,5 @@ HullCollectionResponseType = 7;
   optional HullCollectionResponse hull_collection_response = 8;
   optional Table table = 9;
   optional TableStartMessage table_start_message = 10;
+  optional ObfuscationTableMessage obfuscation_table_message = 11;
 }

@@ -65,7 +65,16 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 	m_tableServer->enqueueMatch(*maybeConnectionp1, *maybeConnectionp2);
 }  // end startPlayModeFor
 
-void PlayModule::sendTableStartMessage(WSConnection& p1, WSConnection& p2) {
+void PlayModule::sendObfuscationTableMessage(const Table& table,
+											 WSConnection destination) const {
+	auto msg = makeServerMessage();
+	msg->set_msgtype(msg::ServerMessage::ObfuscationTableMessageType);
+	*(msg->mutable_obfuscation_table_message()) =
+		table.obfuscationTableMessage();
+	sendMessage(msg, destination);
+}  // end sendObfuscationTableMessage
+
+void PlayModule::sendTableStartMessage(WSConnection& p1, WSConnection& p2) const {
 	auto msg1 = makeServerMessage();
 	auto msg2 = makeServerMessage();
 	msg1->set_msgtype(msg::ServerMessage::TableStartMessageType);
@@ -81,7 +90,7 @@ void PlayModule::sendTableStartMessage(WSConnection& p1, WSConnection& p2) {
 }
 
 void PlayModule::sendTable(const Table& table, WSConnection player1,
-						   WSConnection player2) {
+						   WSConnection player2) const {
 	logServer.log<play>("Sending out table information to (Player1:",
 						connectionString(player1), ", Player2: ",
 						connectionString(player2));

@@ -21,7 +21,7 @@ public:
 						  const GameServer::ConnectionId p2);
 
 	void sendTable(const Table& table, WSConnection player1,
-				   WSConnection player2);
+				   WSConnection player2) const;
 
 	// thanks unique_ptr
 	~PlayModule();
@@ -30,7 +30,9 @@ private:
 	void onPlayInitiationRequest(const msg::PlayInitiationRequest* msg,
 								 WSConnection source);
 
-	void sendTableStartMessage(WSConnection& p1, WSConnection& p2);
+	void sendTableStartMessage(WSConnection& p1, WSConnection& p2) const;
+	void sendObfuscationTableMessage(const Table& table,
+									 WSConnection destination) const;
 	void bindHandlersImp(MessageDispatcher_type* dispatcher) override;
 
 private:

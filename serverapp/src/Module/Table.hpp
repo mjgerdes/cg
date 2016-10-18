@@ -23,9 +23,13 @@ public:
 
 	void initialize(int id);
 	void associate(short obfuscated, Card::Id_type real);
+		msg::ObfuscationTableMessage obfuscationTableMessage() const;
 	~Table();
 
 	inline const msg::Table& raw() const { return m_model; }
+
+private:
+
 
 private:
 	friend class TableServer;
@@ -34,7 +38,8 @@ private:
 	msg::Table m_model;
 	CardIdMap_type m_cardMap;
 
-	// FIXME: need to change these to weak_ptr or we will be leaking memory/holding the connection handles forever or until they get replaced
+	// FIXME: need to change these to weak_ptr or we will be leaking
+	// memory/holding the connection handles forever or until they get replaced
 	WSConnection m_player1;
 	WSConnection m_player2;
 
