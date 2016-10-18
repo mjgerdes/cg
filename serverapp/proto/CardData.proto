@@ -12,7 +12,7 @@ legendary = 3;
 
 
 message CardSet {
-  enum CardSetId { universal = 0; general = 1; };
+  enum CardSetId { universal = 0; general = 1; token = 2;};
   optional CardSetId id = 1;
   }
 
@@ -60,6 +60,8 @@ basic_signal_beacon = 27;
 basic_repair_droid = 24;
 basic_hangar_crew = 25;
 basic_well_stocked = 26;
+universal_engage = 27;
+universal_power_cycle = 28;
   };
 
   enum SMSType { none = 0; science = 1; military = 2; support = 3;};
