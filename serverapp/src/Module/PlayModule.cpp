@@ -70,11 +70,12 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 
 void PlayModule::sendObfuscationTableMessage(
 	const msg::ObfuscationTableMessage& obfuscationTable,
-	WSConnection destination) const {
+	WSConnection& destination) const {
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::ObfuscationTableMessageType);
 	*(msg->mutable_obfuscation_table_message()) = obfuscationTable;
 
+	logServer.log<dbg>("Sending obfuscation table.");
 	sendMessage(msg, destination);
 }  // end sendObfuscationTableMessage
 

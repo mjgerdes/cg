@@ -11,8 +11,9 @@ return systemAcc;
 
 function getCardsForIds(cds, cardMap, card_ids) {
 var acc = [];
-	for(var i = 0; i < card_ids.length(); i++) {
-		var temp = cds.get("cards", card_ids[i]);
+	for(var i = 0; i < card_ids.length; i++) {
+		var temp = cds.get("cards", cardMap[card_ids[i]]);
+		acc.push(temp);
 		}
 	return acc;
 }
@@ -33,9 +34,11 @@ WebSockService.registerHandler(ServerMessageTypes.TableStartMessageType, functio
 
 // obfuscation table message
 WebSockService.registerHandler(ServerMessageTypes.ObfuscationTableMessageType, function(msg) {
-for(var i = 0; i < msg.obfuscation_table_message.length(); i++) {
-$scope.cardMap[msg.obfuscation_table_message[i].obfuscation] = msg.obfuscation_table_message[i].real;
+	console.log(msg.obfuscation_table_message.toSource());
+for(var i = 0; i < msg.obfuscation_table_message.obfuscation_table_entry.length; i++) {
+$scope.cardMap[msg.obfuscation_table_message.obfuscation_table_entry[i].obfuscated] = msg.obfuscation_table_message.obfuscation_table_entry[i].real;
 	}
+	console.log($scope.cardMap);
 	});
 
 // table
@@ -43,19 +46,20 @@ WebSockService.registerHandler(ServerMessageTypes.TableType, function(msg) {
 $scope.tableReadyp = true;
 //$scope.model = msg.table;
 
-	console.log(msg.table.toSource());
+//	console.log(msg.table.toSource());
 
 if( $scope.myPlayerNumber === 1) {
 	// we are player 1
 	$scope.enemySystems = getSystemsForIds(CardDataService, msg.table.player2_system_ids);
 	$scope.playerSystems = getSystemsForIds(CardDataService, msg.table.player1_system_ids);
-			$scope.playerHand = getCardsForIds(CardDataProvider, $scope.cardMap, msg.player1_hand);
+			$scope.playerHand = getCardsForIds(CardDataService, $scope.cardMap, msg.table.player1_hand);
 	} else {
 		// we are player 2
 			$scope.enemySystems = getSystemsForIds(CardDataService, msg.table.player1_system_ids);
 	$scope.playerSystems = getSystemsForIds(CardDataService, msg.table.player2_system_ids);
-		$scope.playerHand = getCardsForIds(CardDataProvider, $scope.cardMap, msg.player2_hand);
+		$scope.playerHand = getCardsForIds(CardDataService, $scope.cardMap, msg.table.player2_hand);
 		}
+	console.log($scope.playerHand.toSource());
 	});
 
 // remember me
