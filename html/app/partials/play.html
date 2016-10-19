@@ -4,6 +4,10 @@
 <div ng-repeat="x in enemySystems track by $index"><cg-system system="x" health="x.health" cards="x.capacity"></cg-system></div>
 
 <h1 class="h1">You</h1>
+
+<div ng-repeat="x in playerSystems track by $index"><cg-system system="x" health="x.health" cards="x.capacity"></cg-system></div>
+<h2 class="h2">Your Hand</h2>
+<div ng-repeat="x in playerHand track by $index"><cg-card card="x"></cg-card></div>
 </div>
 
 
