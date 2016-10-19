@@ -3,6 +3,8 @@
 #include "Module/PlayModule.hpp"
 #include "Module/AuthModule.hpp"
 #include "Module/DataModule.hpp"
+#include "LogServer.hpp"
+#include "NetUtility.hpp"
 
 #include "database.hpp"
 #include "db/Player.hpp"
@@ -11,6 +13,18 @@
 #include "SystemProvider.hpp"
 #include "HullProvider.hpp"
 #include "db/ShipPlan.hpp"
+
+using namespace Log;
+using namespace Utility;
+
+struct TableMessage : LogServer::LogMessage {
+	TableMessage(const std::string& msg) : LogServer::LogMessage(msg) {}
+	inline virtual void write() override {
+		std::cout << "[TABLE] " << m_msg << std::endl;
+	}
+};  // end struct playmessage
+
+using table = TableMessage;
 
 
 // constructor
@@ -27,6 +41,7 @@ TableServer::TableServer(PlayModule& parent, AuthModule* auth, DataModule* data,
 }
 
 void TableServer::enqueueMatch(WSConnection p1, WSConnection p2) {
+	logServer.log<table>("Enqueueing match for ", connectionString(p1), " and ", connectionString(p2));
 	m_incomingMatches.emplace(p1, p2);
 }  // end enqueueMatch
 

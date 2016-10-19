@@ -53,20 +53,24 @@ void PlayModule::startPlayModeFor(const GameServer::ConnectionId p1,
 	// check for disconnect that might have slipped through
 	if (!maybeConnectionp1) {
 		// FIXME: put the p2 back into queue
+		logServer.log<play>("Cannot start table due to disconnect. (1)");
 		return;
 	}
 
 	if (!maybeConnectionp2) {
 		// same
+		logServer.log<play>("Cannot start table due to disconnect. (2)");
 		return;
 	}
 
 	sendTableStartMessage(*maybeConnectionp1, *maybeConnectionp2);
+	logServer.log<dbg>("Done sending table start message.");
 	m_tableServer->enqueueMatch(*maybeConnectionp1, *maybeConnectionp2);
 }  // end startPlayModeFor
 
-void PlayModule::sendObfuscationTableMessage(const msg::ObfuscationTableMessage& obfuscationTable,
-											 WSConnection destination) const {
+void PlayModule::sendObfuscationTableMessage(
+	const msg::ObfuscationTableMessage& obfuscationTable,
+	WSConnection destination) const {
 	auto msg = makeServerMessage();
 	msg->set_msgtype(msg::ServerMessage::ObfuscationTableMessageType);
 	*(msg->mutable_obfuscation_table_message()) = obfuscationTable;
@@ -74,9 +78,12 @@ void PlayModule::sendObfuscationTableMessage(const msg::ObfuscationTableMessage&
 	sendMessage(msg, destination);
 }  // end sendObfuscationTableMessage
 
-void PlayModule::sendTableStartMessage(WSConnection& p1, WSConnection& p2) const {
+void PlayModule::sendTableStartMessage(WSConnection& p1,
+									   WSConnection& p2) const {
+	logServer.log<dbg>("Sending out table start information.");
 	auto msg1 = makeServerMessage();
 	auto msg2 = makeServerMessage();
+
 	msg1->set_msgtype(msg::ServerMessage::TableStartMessageType);
 	msg2->set_msgtype(msg::ServerMessage::TableStartMessageType);
 
@@ -98,12 +105,14 @@ void PlayModule::sendTable(const Table& table, WSConnection player1,
 	msg->set_msgtype(msg::ServerMessage::TableType);
 	*(msg->mutable_table()) = table.raw();
 
+	// sned obfuscation table - at the start we only want people to know their
+	// hands
+	sendObfuscationTableMessage(table.player1HandObfuscationTableMessage(),
+								player1);
+	sendObfuscationTableMessage(table.player2HandObfuscationTableMessage(),
+								player2);
 
-// sned obfuscation table - at the start we only want people to know their hands
-	sendObfuscationTableMessage(table.player1HandObfuscationTableMessage(), player1);
-	sendObfuscationTableMessage(table.player2HandObfuscationTableMessage(), player2);
-
-// actually send the table model
+	// actually send the table model
 	sendMessage(msg, player1);
 	sendMessage(msg, player2);
 }  // end sendTable

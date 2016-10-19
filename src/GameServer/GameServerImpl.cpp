@@ -16,29 +16,34 @@ Impl::GameServerImpl(WSServer& serv, LogServer& logServ)
 	: server(serv),
 	  logServer(logServ),
 	  dbServer(db::makeDatabaseServer()),
+	  // FIXME: deadlock; blocking behaviour of factories can be surprising
+	  // (i.e. bad) if more than the reserved amount of messages are created in
+	  // the same block (i.e. a function)
 	  m_clientMessageFactory(1),
-	  m_serverMessageFactory(1){
+	  m_serverMessageFactory(32) {
 	init();
 }
 
-void Impl::sendMessage(const GameServer::StandardSendMessage& msg, WSConnection& destination) {
+void Impl::sendMessage(const GameServer::StandardSendMessage& msg,
+					   WSConnection& destination) {
 	std::string temp;
 	msg->SerializeToString(&temp);
-//	log<dbg>("temp: ", temp);
+	//	log<dbg>("temp: ", temp);
 	sendRaw(destination, std::move(temp));
-} // end sendMessage
+}  // end sendMessage
 
 void Impl::loadModule(Module_ptr module) {
 	module->bindSendFunction(std::bind(&Impl::sendMessage, this, _1, _2));
-	module->bindServerMessageFactoryFunction(std::bind(&GameServer::StandardServerMessageFactory::makeRecycleMessage, &m_serverMessageFactory));
+	module->bindServerMessageFactoryFunction(
+		std::bind(&GameServer::StandardServerMessageFactory::makeRecycleMessage,
+				  &m_serverMessageFactory));
 	module->bindHandlers(&m_dispatcher);
 	m_modules.push_front(std::move(module));
 }
 
 void Impl::onOpenEvent(WSConnection connection) {
 	logServer.log<net>("Opened connection to", connectionString(connection));
-//	sendRaw(connection, "AUTHPLS");
-
+	//	sendRaw(connection, "AUTHPLS");
 
 	// send internal connection message
 	auto msg = m_clientMessageFactory.makeRecycleMessage();
